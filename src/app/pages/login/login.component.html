@@ -1,0 +1,27 @@
+<div class="w-full h-screen flex justify-center items-center">
+	<form class="w-1/4 bg-gray-100 rounded-md p-4 text-center">
+		<h2 class="text-center text-2xl mb-4">Login</h2>
+		<div class="flex flex-col mb-2 text-left">
+			<label for="email"
+				class="text-sm mb-1">
+				Email
+			</label>
+			<input id="email"
+				type="email"
+				required
+				class="rounded-md h-10">
+		</div>
+		<div class="flex flex-col mb-4 text-left">
+			<label for="password"
+				class="text-sm mb-1">
+				Password
+			</label>
+			<input id="password"
+				type="password"
+				required
+				class="rounded-md h-10">
+		</div>
+		<app-button (click)="navigateToOverview()"
+			buttonText="Login"></app-button>
+	</form>
+</div>
