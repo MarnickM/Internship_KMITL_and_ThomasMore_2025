@@ -1,17 +1,27 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Compiled output
+# ================================
+# 🏗 Compiled Output
+# ================================
 /dist
 /tmp
 /out-tsc
 /bazel-out
 
-# Node
+# ================================
+# 📦 Dependencies
+# ================================
 /node_modules
-npm-debug.log
+npm-debug.log*
 yarn-error.log
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# IDEs and editors
+# ================================
+# 💻 IDEs and Editors
+# ================================
 .idea/
 .project
 .classpath
@@ -19,6 +29,7 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
+*.vscode-test/
 
 # Visual Studio Code
 .vscode/*
@@ -26,17 +37,83 @@ yarn-error.log
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.history/*
+.history/
+*.code-workspace
 
-# Miscellaneous
+# JetBrains (WebStorm, IntelliJ, etc.)
+/.idea/
+/*.iml
+/.run/
+*.swp
+*.swo
+
+# ================================
+# 🔧 Angular / CLI Caches
+# ================================
 /.angular/cache
+.angular/tmp
+/.angular-lock
+
+# ================================
+# 🔥 Firebase / Google Cloud
+# ================================
+.firebaserc
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# ================================
+# 🎨 Styling and SASS
+# ================================
 .sass-cache/
-/connect.lock
+*.css.map
+*.scssc
+
+# ================================
+# ✅ Testing
+# ================================
 /coverage
 /libpeerconnection.log
-testem.log
-/typings
+/testem.log
+/junit.xml
+/karma-reports/
+*.lcov
 
-# System files
+# ================================
+# 🌍 Environment Files
+# ================================
+/src/environments/environment*.ts
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# ================================
+# ⚙️ Miscellaneous
+# ================================
+/connect.lock
+/typings
+/.eslintcache
+/.stylelintcache
+/.prettiercache
+/.cache
+.npm/
+.nvmrc
+.editorconfig
+*.log
+logs/
+*.bak
+
+# ================================
+# 🖥 System Files
+# ================================
 .DS_Store
 Thumbs.db
+ehthumbs.db
+*.swp
+*.swo
+*.swn
+*.sublime-project
+*.sublime-workspace
+*.log
