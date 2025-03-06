@@ -11,4 +11,6 @@ import { NavigationComponent } from "./components/navigation/navigation.componen
 })
 export class AppComponent {
   title = 'DrawingApp';
+
+  loggedIn: boolean = false;
 }
