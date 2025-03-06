@@ -1,0 +1,27 @@
+<div class="w-full h-screen">
+	<h2 class="text-2xl text-center my-4">My drawings</h2>
+    
+	<div class="flex flex-wrap justify-center">
+		@for(drawing of paginatedDrawings ;track $index) {
+            <div class="flex m-3">
+                <div class="h-20 w-72 bg-gray-100 rounded-l-md border border-1 border-gray-200 p-1">
+                    <div>
+                        <p>{{ drawing.topic }}</p>
+                        <p>{{ drawing.description }}</p>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center items-center text-white">
+                    <button class="bg-blue-500 hover:bg-blue-400 transition-all duration-100 w-20 h-full rounded-tr-md">View</button>
+                    <button class="bg-red-500 hover:bg-red-400 transition-all duration-100 w-20 h-full rounded-br-md">Delete</button>
+                </div>
+            </div>
+        }
+	</div>
+    <div class="flex justify-center mt-4 absolute bottom-3 left-1/2 -translate-x-1/2 text-white">
+        <button (click)="prevPage()" [disabled]="currentPage === 1"
+            class="bg-blue-500 hover:bg-blue-400 px-2 py-2 rounded-l-md w-20 disabled:bg-blue-200">Previous</button>
+        <span class="bg-gray-200 px-4 py-2 text-black">{{ currentPage }} / {{ totalPages }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+            class="bg-blue-500 hover:bg-blue-400 px-2 py-2 rounded-r-md w-20 disabled:bg-blue-200">Next</button>
+    </div>
+</div>
