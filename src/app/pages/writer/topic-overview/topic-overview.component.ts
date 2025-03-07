@@ -3,7 +3,7 @@ import { ButtonComponent } from "../../../components/button/button.component";
 import { TopicService } from "../../../services/topics/topic-service.service";
 import { Topic } from '../../../services/topics/topic';
 import { Router } from '@angular/router';
-
+import { UserService } from '../../../services/users/user-service.service';
 
 @Component({
   selector: 'app-topic-overview',
@@ -22,6 +22,7 @@ export class TopicOverviewComponent {
     this.topicService.getTopics().subscribe(topics => {
       this.topics = topics;
     });
+    
   }
 
   navigateToDrawing(topic: Topic) {

@@ -55,7 +55,7 @@ export class DrawingComponent {
     this.drawing = true;
     const { x, y } = this.getMousePosition(event);
     this.coordinates.push({ x, y });
-    console.log(x, y)
+    // console.log(x, y)
 
     this.ctx.beginPath();
     this.ctx.moveTo(x, y);
@@ -65,8 +65,8 @@ export class DrawingComponent {
     if (!this.drawing) return;
 
     const { x, y } = this.getMousePosition(event);
-    this.coordinates.push({ x, y });
-    console.log(x, y)
+    this.coordinates.push({ x, y});
+    // console.log(x, y)
 
     this.ctx.lineTo(x, y);
     this.ctx.stroke();
@@ -77,19 +77,34 @@ export class DrawingComponent {
       const x = -1000
       const y = -1000
       this.coordinates.push({ x, y });
-      console.log(x, y)
+      // console.log(x, y)
       this.ctx.closePath();
     }
     this.drawing = false;
   }
 
+  // private getMousePosition(event: MouseEvent) {
+  //   const rect = this.canvas.nativeElement.getBoundingClientRect();
+  //   return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  // }
+
   private getMousePosition(event: MouseEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
-    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    return { 
+      x: (event.clientX - rect.left) * (this.canvas.nativeElement.width / rect.width), 
+      y: (event.clientY - rect.top) * (this.canvas.nativeElement.height / rect.height)
+    };
   }
+  
 
   clearCanvas() {
     this.ctx.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
     this.coordinates = [];
+  }
+
+  submitDrawing() {
+    console.log(this.selectedOption)
+    console.log(this.description)
+    console.log(this.coordinates)
   }
 }
