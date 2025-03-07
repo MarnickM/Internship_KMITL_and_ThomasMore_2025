@@ -3,6 +3,7 @@
 	@for (topic of topics; track $index) {
 		<div class="my-4 flex flex-col">
 			<app-button buttonText="{{topic.name}}"
+				(click)="navigateToDrawing(topic)"
 				height="60px"
 				width="300px"
 				class="mb-2">

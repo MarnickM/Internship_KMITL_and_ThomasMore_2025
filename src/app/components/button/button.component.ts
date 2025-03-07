@@ -12,4 +12,5 @@ export class ButtonComponent {
   @Input() buttonText: string = ''
   @Input() width: string = '144px';
   @Input() height: string = '40px';
+
 }
