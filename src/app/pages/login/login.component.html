@@ -1,27 +1,31 @@
-<div class="w-full h-screen flex justify-center items-center">
-	<form class="w-1/4 bg-gray-100 rounded-md p-4 text-center">
-		<h2 class="text-center text-2xl mb-4">Login</h2>
-		<div class="flex flex-col mb-2 text-left">
-			<label for="email"
-				class="text-sm mb-1">
-				Email
-			</label>
-			<input id="email"
-				type="email"
-				required
-				class="rounded-md h-10">
-		</div>
-		<div class="flex flex-col mb-4 text-left">
-			<label for="password"
-				class="text-sm mb-1">
-				Password
-			</label>
-			<input id="password"
-				type="password"
-				required
-				class="rounded-md h-10">
-		</div>
-		<app-button (click)="navigateToOverview()"
-			buttonText="Login"></app-button>
-	</form>
-</div>
+<body class="w-full h-screen flex justify-center items-center -mt-12">
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    
+	<div id="g_id_onload"
+        [attr.data-client_id]="client_id"
+        data-callback="handleCredentialResponse"
+        data-auto_prompt="false">
+    </div>
+
+
+    <div class="g_id_signin"
+        data-type="standard"
+        data-size="large"
+        data-theme="outline"
+        data-text="sign_in_with"
+        data-shape="rectangular"
+        data-logo_alignment="left">
+    </div>
+
+</body>
+
+
+<script>
+	function handleCredentialResponse(response) {
+	  console.log("Encoded JWT ID Token: " + response.credential);
+	  localStorage.setItem("google_token", response.credential);
+	  window.dispatchEvent(new CustomEvent("google-signin-success", { detail: response.credential }));
+	}
+</script>
+  
+

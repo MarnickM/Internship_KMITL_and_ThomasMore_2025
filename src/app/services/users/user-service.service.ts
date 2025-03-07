@@ -18,6 +18,10 @@ export class UserService {
       getUser(id: string): Observable<User> {
         return docData(doc(this.firestore, `users/${id}`), { idField: 'id' }) as Observable<User>;
       }
+
+      getUserByEmail(email: string): Observable<User> {
+        return docData(doc(this.firestore, `users/${email}`), { idField: 'id' }) as Observable<User>;
+      }
       
       addUser(user: User): Observable<string> {
         return from(addDoc(this.collection, user).then(resp => resp.id));
