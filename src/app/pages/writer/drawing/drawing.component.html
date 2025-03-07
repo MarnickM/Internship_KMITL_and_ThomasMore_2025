@@ -1,37 +1,49 @@
-<div class="w-full h-screen flex justify-center items-center">
-	<div class="w-full md:w-1/2 lg:w-1/3 bg-gray-100 rounded-md p-4">
-        <h2 class="text-2xl mb-4 text-center">New drawing for (Topic hier)</h2>
-        <div>
-            <div class="flex flex-col mb-2">
-                <label for="dropdown" class="text-sm">Select an option</label>
-                <select id="dropdown" class="h-10 rounded-md">
-                    @for(option of dropdownOptions ;track $index) {
-                    <option [value]="option">
-                        {{ option }}
-                    </option>
-                    }
-                </select>
+<div>
+    <div class="w-full h-screen flex flex-col justify-center items-center -mt-12">
+        <!-- Centered title above both columns -->
+        <div class="w-full text-center mb-4">
+            <h2 class="text-2xl">New drawing for {{ topic.name }}</h2>
+        </div>
+
+        <!-- Flex container for the two columns -->
+        <div class="w-full md:w-3/5 lg:w-2/3 bg-gray-300 rounded-md p-16 flex flex-col md:flex-row">
+            <!-- Left side: Input fields -->
+            <div class="flex-1 mb-4 md:mb-0 mr-0 md:mr-4">
+                <div>
+                    <div class="flex flex-col mb-2">
+                        <label for="dropdown" class="text-sm">Select an option</label>
+                        <select id="dropdown" class="h-10 rounded-md" [(ngModel)]="selectedOption">
+                            <!-- Assuming the dynamic generation of dropdown options here -->
+                            <option *ngFor="let option of dropdownOptions" [value]="option">
+                                {{ option }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label for="description" class="text-sm">Description</label>
+                        <textarea id="description" class="w-full border rounded-md p-2 h-36"></textarea>
+                    </div>
+                </div>
             </div>
-            <div class="mb-2">
-                <label for="description" class="text-sm">Description</label>
-                <textarea id="description"
-                    class="w-full border rounded-md p-2 h-32">
-                </textarea>
+    
+            <!-- Right side: Drawing panel -->
+            <div class="flex-1">
+                <p class="text-sm text-left">Drawing area</p>
+                <canvas #drawingCanvas
+                    (mousedown)="startDrawing($event)"
+                    (mousemove)="draw($event)"
+                    (mouseup)="stopDrawing()"
+                    (mouseleave)="stopDrawing()"
+                    style="border:1px solid lightgray;"
+                    class="rounded-md w-full mb-2 bg-white">
+                </canvas>
             </div>
         </div>
-        <div class="text-center">
-            <p class="text-sm text-left">Drawing area</p>
-            <canvas #drawingCanvas
-                (mousedown)="startDrawing($event)"
-                (mousemove)="draw($event)"
-                (mouseup)="stopDrawing()"
-                (mouseleave)="stopDrawing()"
-                style="border:1px solid lightgray;"
-                class="rounded-md w-full mb-2 bg-white">
-            </canvas>
-            
-            <app-button (click)="clearCanvas()" buttonText="Clear" class="mr-1"></app-button>
-            <app-button buttonText="Submit" class="ml-1"></app-button>
-        </div>
-	</div>
+    </div>
+
+    <!-- Center the buttons below the modal -->
+    <div class="w-full flex justify-center -mt-48">
+        <app-button (click)="clearCanvas()" buttonText="Clear" class="mr-2"></app-button>
+        <app-button buttonText="Submit" class="ml-2"></app-button>
+    </div>
 </div>

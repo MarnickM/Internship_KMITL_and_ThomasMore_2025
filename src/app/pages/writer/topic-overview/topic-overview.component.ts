@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ButtonComponent } from "../../../components/button/button.component";
 import { TopicService } from "../../../services/topics/topic-service.service";
 import { Topic } from '../../../services/topics/topic';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -15,11 +16,18 @@ export class TopicOverviewComponent {
 
   topics: Topic[] | undefined;
 
-  constructor(private topicService: TopicService) { }
+  constructor(private topicService: TopicService, private router: Router) { }
 
   ngOnInit() {
     this.topicService.getTopics().subscribe(topics => {
       this.topics = topics;
     });
+  }
+
+  navigateToDrawing(topic: Topic) {
+    this.router.navigate(['/drawing'], {
+      queryParams: { id: topic.id, name: topic.name }
+    });
+    
   }
 }
