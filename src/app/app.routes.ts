@@ -14,4 +14,5 @@ export const routes: Routes = [
     { path: 'drawing', component: DrawingComponent, canActivate: [AuthGuard] },
     { path: 'submissions-overview', component: SubmissionsOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [1] } },
     { path: 'access-denied', component: AccessDeniedComponent },
+    { path: '**', redirectTo: '/access-denied' }
 ];
