@@ -1,33 +1,39 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private user: any = null;
+  private userSubject = new BehaviorSubject<any>(null);
+  user$: Observable<any> = this.userSubject.asObservable();
 
-  constructor() { 
-    this.loadUserFromStorage(); // Load user from localStorage if available
+  constructor() {
+    this.loadUserFromStorage();
   }
 
   setUser(user: any) {
-    this.user = user;
-    localStorage.setItem('user', JSON.stringify(user)); // Save in localStorage
+    this.userSubject.next(user);
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
   getUser() {
-    return this.user;
+    return this.userSubject.value;
   }
 
   loadUserFromStorage() {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      this.user = JSON.parse(storedUser);
+      this.userSubject.next(JSON.parse(storedUser));
     }
   }
 
+  isLoggedIn$(): Observable<boolean> {
+    return this.user$.pipe(map(user => !!user));
+  }
+
   logout() {
-    this.user = null;
+    this.userSubject.next(null);
     localStorage.removeItem('user');
   }
 }

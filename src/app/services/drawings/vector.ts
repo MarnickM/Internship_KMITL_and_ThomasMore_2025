@@ -1,3 +1,4 @@
 export interface Vector {
-    [key: string]: number[];
+    x: number;
+    y: number;
 }

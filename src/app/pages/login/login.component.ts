@@ -4,26 +4,31 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { GoogleSigninService } from '../../google_signin.service';
-import { environment } from '../../../environments/environments';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/users/user-service.service';
 import { AuthService } from '../../services/auth.service';
+import { environment } from '../../environments/environments';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [ButtonComponent, FormsModule, CommonModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
 
   client_id: string = environment.google_client_id;
   userData: { [key: string]: any } = {};
 
-
-  constructor(private router: Router, private googleAuthService: GoogleSigninService, private authService: SocialAuthService, private ngZone: NgZone, private userService: UserService, private authUserService: AuthService) { 
-  }
+  constructor(
+    private router: Router,
+    private googleAuthService: GoogleSigninService,
+    private authService: SocialAuthService,
+    private ngZone: NgZone,
+    private userService: UserService,
+    private authUserService: AuthService
+  ) { }
 
   ngOnInit() {
     (window as any).handleCredentialResponse = (response: any) => {
@@ -38,9 +43,9 @@ export class LoginComponent {
 
       // Store user data
       this.userData = userInfo;
-      // store in database
-      this.saveUser();
-      // store in auth service
+      // Store in database
+      this.saveUser(userInfo);
+      // Store in auth service
       this.authUserService.setUser(userInfo);
 
       // Navigate within Angular zone
@@ -65,17 +70,21 @@ export class LoginComponent {
     }
   }
 
-  saveUser() {
-    this.userService.getUserByEmail(this.userData['email']).subscribe(user => {
+  saveUser(userInfo: any) {
+    this.userService.getUserByEmail(userInfo['email']).subscribe(user => {
       if (!user) {
+        console.log("Dit is de user opgehaald by Email: ", user)
         this.userService.addUser({
-          email: this.userData['email'],
-          name: this.userData['name'],
-          image: this.userData['picture'],
+          email: userInfo['email'],
+          name: userInfo['name'],
+          image: userInfo['picture'],
           role_id: 'dfaNnrXgH6bqFys0Sw44'
         }).subscribe(id => {
           console.log("User added with ID:", id);
         });
+      } else {
+        // If the user exists, update the user details (optional)
+        console.log("User already exists");
       }
     });
   }
@@ -87,13 +96,7 @@ export class LoginComponent {
     }
   }
 
-  // ngOnInit() {
-  //   this.authService.authState.subscribe((user) => {
-  //     this.user = user;
-  //     this.loggedIn = (user != null);
-  //   });
-  // }
-
+  // Navigation logic after successful login
   navigateToOverview() {
     this.router.navigate(['/topic-overview']);
   }
@@ -104,25 +107,13 @@ export class LoginComponent {
 
   signIn() {
     console.log('Sign in');
-  
-    // this.authService.initState.subscribe((isReady) => {
-    //   if (!isReady) {
-    //     console.error('Login providers not ready yet. Please wait...');
-    //     return;
-    //   }
-  
-      // this.authService.authState.subscribe((user) => {
-        // if (!user) {
-          console.log('Sign in with Google');
-          this.googleAuthService.signInWithGoogle().then(user => {
-            console.log(user);
-            this.navigateToOverview();
-          }).catch(err => {
-            console.error('Google Sign-In Error:', err);
-          });
-        // }
-      // });
-    // });
+
+    // Sign in with Google
+    this.googleAuthService.signInWithGoogle().then(user => {
+      console.log(user);
+      this.navigateToOverview();
+    }).catch(err => {
+      console.error('Google Sign-In Error:', err);
+    });
   }
-  
 }
