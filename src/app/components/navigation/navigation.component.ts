@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [CommonModule, ButtonComponent],
+  imports: [CommonModule, ButtonComponent, RouterModule],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.css'
 })

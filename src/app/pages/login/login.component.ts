@@ -20,6 +20,7 @@ export class LoginComponent {
 
   client_id: string = environment.google_client_id;
   userData: { [key: string]: any } = {};
+  roleId: string = environment.role_id;
 
   constructor(
     private router: Router,
@@ -78,7 +79,7 @@ export class LoginComponent {
           email: userInfo['email'],
           name: userInfo['name'],
           image: userInfo['picture'],
-          role_id: 'dfaNnrXgH6bqFys0Sw44'
+          role_id: this.roleId
         }).subscribe(id => {
           console.log("User added with ID:", id);
         });
