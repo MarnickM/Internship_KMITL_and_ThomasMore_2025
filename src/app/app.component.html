@@ -1,18 +1,11 @@
-<!-- Disable page scrolling globally -->
-<body class="overflow-hidden">
-    <div class="relative w-full h-screen">
-        <!-- Background Image -->
+<body class="overflow-hidden h-screen">
+    @if(loggedIn) { 
+        <app-navigation></app-navigation>
+    } 
+    <div class="relative w-full h-screen text-center">
         <img src="https://images.pexels.com/photos/316466/pexels-photo-316466.jpeg"
             alt="bg"
             class="absolute top-0 left-0 w-full h-full object-cover -z-50">
-        
-        <!-- Content goes here -->
-        <!-- Navigation (shown only when logged in) -->
-        <!-- @if(loggedIn) { -->
-        <app-navigation></app-navigation>
-        <!-- } -->
-        
-        <!-- Router Outlet -->
         <router-outlet></router-outlet>
     </div>
 </body>

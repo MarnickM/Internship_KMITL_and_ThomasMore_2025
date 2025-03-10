@@ -27,11 +27,11 @@ export class DrawingComponent {
   constructor(private route: ActivatedRoute, private labelService: LabelService) {
     // Access the query parameters
     this.route.queryParams.subscribe(params => {
-    if (this.topic) {
+      if (this.topic) {
         this.topic.id = params['id'];
         this.topic.name = params['name'];
       }
-    if (this.topic.id !== '') {
+      if (this.topic.id !== '') {
         this.labelService.getLabelsByTopic(this.topic.id).subscribe(labels => {
           console.log(labels)
           for (let label of labels) {
@@ -40,7 +40,7 @@ export class DrawingComponent {
           }
         });
       }
-    
+
     });
   }
 
@@ -65,7 +65,7 @@ export class DrawingComponent {
     if (!this.drawing) return;
 
     const { x, y } = this.getMousePosition(event);
-    this.coordinates.push({ x, y});
+    this.coordinates.push({ x, y });
     // console.log(x, y)
 
     this.ctx.lineTo(x, y);
@@ -90,12 +90,12 @@ export class DrawingComponent {
 
   private getMousePosition(event: MouseEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
-    return { 
-      x: (event.clientX - rect.left) * (this.canvas.nativeElement.width / rect.width), 
+    return {
+      x: (event.clientX - rect.left) * (this.canvas.nativeElement.width / rect.width),
       y: (event.clientY - rect.top) * (this.canvas.nativeElement.height / rect.height)
     };
   }
-  
+
 
   clearCanvas() {
     this.ctx.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
