@@ -1,11 +1,11 @@
 import { Vector } from "./vector";
 
 export interface Drawing {
-    id: string;
+    id?: string;
     writer_id: string;
     label_id: string;
     topic_id: string;
-    vector: Vector;
+    vector: Array<Vector>;
     description: string;
     created_at: Date;
 }
