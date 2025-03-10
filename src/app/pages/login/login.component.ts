@@ -21,6 +21,7 @@ export class LoginComponent {
 
   client_id: string = environment.google_client_id;
   userData: { [key: string]: any } = {};
+
   loading: boolean = false;
 
   // Use environment variables for role IDs

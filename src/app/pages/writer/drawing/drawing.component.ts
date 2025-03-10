@@ -5,6 +5,12 @@ import { Topic } from '../../../services/topics/topic';
 import { LabelService } from '../../../services/labels/label-service.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { DrawingService } from '../../../services/drawings/drawing-service.service';
+import { Drawing } from '../../../services/drawings/drawing';
+import { Vector } from '../../../services/drawings/vector';
+import { UserService } from '../../../services/users/user-service.service';
+import { AuthService } from '../../../services/auth.service';
+import { filter, firstValueFrom, take } from 'rxjs';
 
 @Component({
   selector: 'app-drawing',
@@ -23,8 +29,19 @@ export class DrawingComponent {
   selectedOption: string = '';
   dropdownOptions: string[] = []
   description: string = '';
+  error: boolean = false;
+  success: boolean = false;
+  labelId: string = '';
+  drawingObject: Drawing = {
+    writer_id: '',
+    label_id: '',
+    topic_id: '',
+    vector: [],
+    description: '',
+    created_at: new Date()
+  }
 
-  constructor(private route: ActivatedRoute, private labelService: LabelService) {
+  constructor(private route: ActivatedRoute, private labelService: LabelService, private drawingService: DrawingService, private userService: UserService, private authService: AuthService) { 
     // Access the query parameters
     this.route.queryParams.subscribe(params => {
       if (this.topic) {
@@ -36,11 +53,11 @@ export class DrawingComponent {
           console.log(labels)
           for (let label of labels) {
             this.dropdownOptions.push(label.name);
+            this.labelId = label.id || '';
             console.log(label.name)
           }
         });
       }
-
     });
   }
 
@@ -102,9 +119,48 @@ export class DrawingComponent {
     this.coordinates = [];
   }
 
-  submitDrawing() {
-    console.log(this.selectedOption)
-    console.log(this.description)
-    console.log(this.coordinates)
+  async loadUser() {
+    const user = await firstValueFrom(
+      this.userService.getUserByEmail(this.authService.getUser().email).pipe(
+        filter(user => !!user), // Wait for a valid user
+        take(1) // Take only the first result
+      )
+    );
+    this.drawingObject.writer_id = user.id || '';
+    console.log('User found: ', user.id);
+  }
+  
+  
+
+  async submitDrawing() {
+    this.drawingObject.label_id = this.labelId;
+    this.drawingObject.description = this.description;
+    this.drawingObject.vector = this.coordinates;
+    this.drawingObject.topic_id = this.topic.id;
+    this.drawingObject.created_at = new Date();
+
+    await this.loadUser();
+
+    console.log(this.drawingObject)
+    if (this.drawingObject.writer_id === '') {
+      console.error('User not found');
+      return;
+    }
+
+    if (this.drawingObject.label_id === '') {
+      this.error = true;
+      return;
+    }
+    this.drawingService.addDrawing(this.drawingObject).subscribe(id => {
+      console.log('Drawing added with id: ', id);
+      this.success = true;
+    });
+  }
+
+  toggleError() {
+    this.error = !this.error;
+  }
+  toggleSuccess() {
+    this.success = !this.success;
   }
 }
