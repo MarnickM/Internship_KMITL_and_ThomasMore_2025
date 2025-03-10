@@ -7,7 +7,7 @@ import { GoogleSigninService } from '../../google_signin.service';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/users/user-service.service';
 import { AuthService } from '../../services/auth.service';
-import { environment } from '../../environments/environments';
+import { environment } from '../../../environments/environments';
 
 @Component({
   selector: 'app-login',
@@ -73,7 +73,7 @@ export class LoginComponent {
   saveUser(userInfo: any) {
     this.userService.getUserByEmail(userInfo['email']).subscribe(user => {
       if (!user) {
-        console.log("Dit is de user opgehaald by Email: ", user)
+        // console.log("Dit is de user opgehaald by Email: ", user)
         this.userService.addUser({
           email: userInfo['email'],
           name: userInfo['name'],

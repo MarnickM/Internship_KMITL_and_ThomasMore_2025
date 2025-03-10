@@ -28,7 +28,7 @@ export class AuthService {
     }
   }
 
-  isLoggedIn$(): Observable<boolean> {
+  isLoggedIn(): Observable<boolean> {
     return this.user$.pipe(map(user => !!user));
   }
 

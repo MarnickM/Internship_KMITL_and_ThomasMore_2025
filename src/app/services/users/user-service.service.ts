@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, deleteDoc, doc, docData, Firestore, setDoc } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, deleteDoc, doc, docData, Firestore, getDocs, query, setDoc, where } from '@angular/fire/firestore';
 import { User } from './user';
-import { from, Observable } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +19,15 @@ export class UserService {
     return docData(doc(this.firestore, `users/${id}`), { idField: 'id' }) as Observable<User>;
   }
 
-  getUserByEmail(email: string): Observable<User> {
-    return docData(doc(this.firestore, `users/${email}`), { idField: 'id' }) as Observable<User>;
+  getUserByEmail(email: string): Observable<User | undefined> {
+    const usersRef = collection(this.firestore, 'users');
+    const q = query(usersRef, where('email', '==', email));
+    
+    return collectionData(q, { idField: 'id' }).pipe(
+      map(users => (users.length > 0 ? users[0] as User : undefined))
+    );
   }
+  
 
   addUser(user: User): Observable<string> {
     return from(addDoc(this.collection, user).then(resp => resp.id));

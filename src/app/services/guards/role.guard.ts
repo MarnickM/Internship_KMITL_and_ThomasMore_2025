@@ -29,7 +29,7 @@ export class RoleGuard implements CanActivate {
                     const roleId = userDetails?.role_id;
                     console.log("RoleId: ", roleId)
                     const allowedRoles = route.data['roles'] as string[];
-                    if (allowedRoles.includes(roleId)) {
+                    if (roleId && allowedRoles.includes(roleId)) {
                         return true;
                     } else {
                         this.router.navigate(['/access-denied']);
