@@ -19,7 +19,7 @@ export const routes: Routes = [
     // Writer
     { path: 'topic-overview', component: TopicOverviewComponent, canActivate: [AuthGuard] },
     { path: 'drawing', component: DrawingComponent, canActivate: [AuthGuard] },
-    { path: 'submissions-overview', component: SubmissionsOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.writer_role_id] } },
+    { path: 'submissions-overview', component: SubmissionsOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['dfaNnrXgH6bqFys0Sw44'] } },
     // Manager
     { path: 'topic-management', component: TopicManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id] } },
     { path: 'writer-management', component: WriterManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id] } },

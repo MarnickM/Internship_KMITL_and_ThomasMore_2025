@@ -27,7 +27,8 @@ export class RoleGuard implements CanActivate {
             return this.userService.getUserByEmail(user.email).pipe(
                 map(userDetails => {
                     const roleId = userDetails?.role_id;
-                    console.log("RoleId: ", roleId)
+                    console.log("Vanuit role.guard: ", user.email)
+                    console.log("Vanuit role.guard: ", roleId)
                     const allowedRoles = route.data['roles'] as string[];
                     if (roleId && allowedRoles.includes(roleId)) {
                         return true;

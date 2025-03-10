@@ -8,11 +8,12 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/users/user-service.service';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../environments/environments';  // Import environment variables
+import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ButtonComponent, FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, LoaderComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -20,6 +21,7 @@ export class LoginComponent {
 
   client_id: string = environment.google_client_id;
   userData: { [key: string]: any } = {};
+  loading: boolean = false;
 
   // Use environment variables for role IDs
   writerRoleId = environment.writer_role_id;
@@ -102,6 +104,7 @@ export class LoginComponent {
 
   // Method to redirect based on user role
   redirectBasedOnRole(userInfo: any) {
+    this.loading = true
     this.userService.getUserByEmail(userInfo['email']).subscribe(user => {
       if (user) {
         switch (user.role_id) {
