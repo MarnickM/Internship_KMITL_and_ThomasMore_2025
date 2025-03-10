@@ -7,12 +7,13 @@ import { GoogleSigninService } from '../../google_signin.service';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/users/user-service.service';
 import { AuthService } from '../../services/auth.service';
-import { environment } from '../../../environments/environments';
+import { environment } from '../../../environments/environments';  // Import environment variables
+import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ButtonComponent, FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, LoaderComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -20,7 +21,13 @@ export class LoginComponent {
 
   client_id: string = environment.google_client_id;
   userData: { [key: string]: any } = {};
-  roleId: string = environment.role_id;
+
+  loading: boolean = false;
+
+  // Use environment variables for role IDs
+  writerRoleId = environment.writer_role_id;
+  managerRoleId = environment.manager_role_id;
+  adminRoleId = environment.admin_role_id;
 
   constructor(
     private router: Router,
@@ -51,7 +58,8 @@ export class LoginComponent {
 
       // Navigate within Angular zone
       this.ngZone.run(() => {
-        this.router.navigate(['/topic-overview']);
+        // Call the function to navigate based on user role
+        this.redirectBasedOnRole(userInfo);
       });
     };
   }
@@ -74,17 +82,15 @@ export class LoginComponent {
   saveUser(userInfo: any) {
     this.userService.getUserByEmail(userInfo['email']).subscribe(user => {
       if (!user) {
-        // console.log("Dit is de user opgehaald by Email: ", user)
         this.userService.addUser({
           email: userInfo['email'],
           name: userInfo['name'],
           image: userInfo['picture'],
-          role_id: this.roleId
+          role_id: this.writerRoleId  // Default role set to writer role, you can change it as needed
         }).subscribe(id => {
           console.log("User added with ID:", id);
         });
       } else {
-        // If the user exists, update the user details (optional)
         console.log("User already exists");
       }
     });
@@ -95,6 +101,28 @@ export class LoginComponent {
     if (gIdOnloadDiv) {
       gIdOnloadDiv.setAttribute('data-client_id', this.client_id);
     }
+  }
+
+  // Method to redirect based on user role
+  redirectBasedOnRole(userInfo: any) {
+    this.loading = true
+    this.userService.getUserByEmail(userInfo['email']).subscribe(user => {
+      if (user) {
+        switch (user.role_id) {
+          case this.managerRoleId:
+            this.router.navigate(['/manager-overview']);
+            break;
+          case this.adminRoleId:
+            this.router.navigate(['/manager-management']);
+            break;
+          default:
+            this.router.navigate(['/topic-overview']);
+            break;
+        }
+      } else {
+        this.router.navigate(['/access-denied']);
+      }
+    });
   }
 
   // Navigation logic after successful login

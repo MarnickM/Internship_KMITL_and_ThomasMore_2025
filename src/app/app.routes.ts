@@ -7,12 +7,26 @@ import { AuthGuard } from './services/guards/auth.guard';
 import { LoginGuard } from './services/guards/login.guard';
 import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
 import { RoleGuard } from './services/guards/role.guard';
+import { environment } from '../environments/environments';
+import { TopicManagementComponent } from './pages/manager/topic-management/topic-management.component';
+import { WriterManagementComponent } from './pages/manager/writer-management/writer-management.component';
+import { ManagerManagementComponent } from './pages/admin/manager-management/manager-management.component';
+import { ManagerOverviewComponent } from './pages/manager/manager-overview/manager-overview.component';
 
 export const routes: Routes = [
+    // Login
     { path: '', component: LoginComponent, canActivate: [LoginGuard] },
+    // Writer
     { path: 'topic-overview', component: TopicOverviewComponent, canActivate: [AuthGuard] },
     { path: 'drawing', component: DrawingComponent, canActivate: [AuthGuard] },
-    { path: 'submissions-overview', component: SubmissionsOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [1] } },
+    { path: 'submissions-overview', component: SubmissionsOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['dfaNnrXgH6bqFys0Sw44'] } },
+    // Manager
+    { path: 'topic-management', component: TopicManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id] } },
+    { path: 'writer-management', component: WriterManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id] } },
+    { path: 'manager-overview', component: ManagerOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id] } },
+    // Admin
+    { path: 'manager-management', component: ManagerManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.admin_role_id] } },
+    // Error pages
     { path: 'access-denied', component: AccessDeniedComponent },
     { path: '**', redirectTo: '/access-denied' }
 ];
