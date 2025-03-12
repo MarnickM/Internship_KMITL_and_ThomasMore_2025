@@ -27,6 +27,14 @@ export class UserService {
       map(users => (users.length > 0 ? users[0] as User : undefined))
     );
   }
+
+  getUsersByRoles(role_ids: string[]): Observable<User[] | undefined> {  
+    const usersRef = collection(this.firestore, 'users');
+    const q = query(usersRef, where('role_id', 'in', role_ids));
+    return collectionData(q, { idField: 'id' }).pipe(
+      map(users => users as User[])
+    );
+  }
   
 
   addUser(user: User): Observable<string> {
