@@ -40,14 +40,31 @@ export class DrawingComponent {
     description: '',
     created_at: new Date()
   }
+  updateDrawing: boolean = false;
+  drawingID: string = '';
 
   constructor(private route: ActivatedRoute, private labelService: LabelService, private drawingService: DrawingService, private userService: UserService, private authService: AuthService) { 
     // Access the query parameters
     this.route.queryParams.subscribe(params => {
-      if (this.topic) {
+
+      if (params['name'] != undefined) {
+        // if we come from the topic overview page
         this.topic.id = params['id'];
         this.topic.name = params['name'];
+        console.log("We are coming from the topic overview page")
       }
+      else {
+        this.updateDrawing = true;
+        // if we come from the submissions overview page
+        this.drawingID = params['id'];
+        this.topic.id = params['topic_id'];
+        this.description = params['description'];
+        this.topic.name = params['topic'];
+        this.selectedOption = params['label'];
+        this.coordinates = JSON.parse(params['vector']);
+        console.log("We are coming from the submissions overview page")
+      }
+
       if (this.topic.id !== '') {
         this.labelService.getLabelsByTopic(this.topic.id).subscribe(labels => {
           console.log(labels)
@@ -58,6 +75,9 @@ export class DrawingComponent {
           }
         });
       }
+      if (this.selectedOption && this.dropdownOptions.includes(this.selectedOption)) {
+        this.selectedOption = this.selectedOption;
+      }
     });
   }
 
@@ -66,7 +86,41 @@ export class DrawingComponent {
     this.ctx.lineWidth = 2;
     this.ctx.lineCap = 'round';
     this.ctx.strokeStyle = 'black';
+  
+    // If there are stored coordinates, redraw them
+    if (this.coordinates.length > 0) {
+      this.drawStoredCoordinates();
+    }
   }
+  
+
+  private drawStoredCoordinates() {
+    if (!this.coordinates.length) return;
+  
+    this.ctx.beginPath();
+    let isDrawing = false;
+  
+    for (let i = 0; i < this.coordinates.length; i++) {
+      const { x, y } = this.coordinates[i];
+  
+      if (x === -1000 && y === -1000) {
+        this.ctx.closePath();  // Stop the current path
+        isDrawing = false;
+        this.ctx.beginPath();  // Start a new path for the next stroke
+        continue;
+      }
+  
+      if (!isDrawing) {
+        this.ctx.moveTo(x, y);
+        isDrawing = true;
+      } else {
+        this.ctx.lineTo(x, y);
+        this.ctx.stroke();
+      }
+    }
+    this.ctx.closePath();
+  }
+  
 
   startDrawing(event: MouseEvent) {
     this.drawing = true;
@@ -99,11 +153,6 @@ export class DrawingComponent {
     }
     this.drawing = false;
   }
-
-  // private getMousePosition(event: MouseEvent) {
-  //   const rect = this.canvas.nativeElement.getBoundingClientRect();
-  //   return { x: event.clientX - rect.left, y: event.clientY - rect.top };
-  // }
 
   private getMousePosition(event: MouseEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
@@ -138,10 +187,11 @@ export class DrawingComponent {
     this.drawingObject.vector = this.coordinates;
     this.drawingObject.topic_id = this.topic.id;
     this.drawingObject.created_at = new Date();
-
+    if (this.drawingID !== '') {
+      this.drawingObject.id = this.drawingID;
+    }
     await this.loadUser();
-
-    console.log(this.drawingObject)
+      
     if (this.drawingObject.writer_id === '') {
       console.error('User not found');
       return;
@@ -151,10 +201,20 @@ export class DrawingComponent {
       this.error = true;
       return;
     }
-    this.drawingService.addDrawing(this.drawingObject).subscribe(id => {
-      console.log('Drawing added with id: ', id);
-      this.success = true;
-    });
+
+    // console.log(this.drawingObject)
+    if (!this.updateDrawing) {
+      this.drawingService.addDrawing(this.drawingObject).subscribe(id => {
+        console.log('Drawing added with id: ', id);
+        this.success = true;
+      });
+    }
+    else {
+      this.drawingService.updateDrawing(this.drawingObject).subscribe(() => {
+        console.log('Drawing updated');
+        this.success = true;
+      });
+    }
   }
 
   toggleError() {
