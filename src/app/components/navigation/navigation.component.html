@@ -20,7 +20,7 @@
 				<app-button (click)="navigateToManagerManagement()" buttonText="Manager Man." class="mt-2 sm:mt-0 mr-2"></app-button>
 			}
 			  
-			@else {
+			@else if(userRole == "dfaNnrXgH6bqFys0Sw44") {
 				<app-button (click)="navigateToTopicOverview()" buttonText="New drawing" class="mt-2 sm:mt-0 mr-2"></app-button>
 			  <app-button (click)="navigateToMyDrawings()" buttonText="My drawings" class="mt-2 sm:mt-0"></app-button>
 			}

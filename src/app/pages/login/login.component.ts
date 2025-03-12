@@ -28,6 +28,7 @@ export class LoginComponent {
   writerRoleId = environment.writer_role_id;
   managerRoleId = environment.manager_role_id;
   adminRoleId = environment.admin_role_id;
+  noRole = environment.no_role;
 
   constructor(
     private router: Router,
@@ -114,6 +115,9 @@ export class LoginComponent {
             break;
           case this.adminRoleId:
             this.router.navigate(['/manager-management']);
+            break;
+          case this.noRole:
+            this.router.navigate(['/role-review']);
             break;
           default:
             this.router.navigate(['/topic-overview']);

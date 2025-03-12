@@ -1,1 +1,22 @@
-<p>manager-overview works!</p>
+@for(topic of topics; track $index) {
+    <h3 class="text-left text-2xl">{{ topic.name }} - {{ drawingsByTopic[topic.id].length }} drawing(s)</h3>
+    <button (click)="downloadCSV(topic)">Download CSV</button>
+    <div class="flex flex-wrap justify-center">
+		@for(drawing of drawingsByTopic[topic.id]; track $index) {
+            <div class="flex m-3">
+                <div class="h-20 w-72 bg-gray-100 rounded-l-md border border-1 border-gray-200 p-1">
+                    <div>
+                        <p>{{ drawing.topic_id }}</p>
+                        <p>{{ drawing.description }}</p>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center items-center text-white">
+                    <button class="bg-blue-500 hover:bg-blue-400 transition-all duration-100 w-20 h-full rounded-tr-md"
+                    >View</button>
+                    <button class="bg-red-500 hover:bg-red-400 transition-all duration-100 w-20 h-full rounded-br-md">Delete</button>
+                </div>
+            </div>
+        }
+	</div>
+}
+
