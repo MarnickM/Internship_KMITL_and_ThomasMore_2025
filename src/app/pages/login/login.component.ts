@@ -86,7 +86,7 @@ export class LoginComponent {
           email: userInfo['email'],
           name: userInfo['name'],
           image: userInfo['picture'],
-          role_id: this.writerRoleId  // Default role set to writer role, you can change it as needed
+          role_id: 'No Role'
         }).subscribe(id => {
           console.log("User added with ID:", id);
         });

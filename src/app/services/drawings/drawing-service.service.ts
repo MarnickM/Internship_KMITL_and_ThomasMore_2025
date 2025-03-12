@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, deleteDoc, doc, docData, Firestore, getDoc, setDoc, updateDoc } from '@angular/fire/firestore';
-import { from, Observable } from 'rxjs';
+import { addDoc, collection, collectionData, deleteDoc, doc, docData, Firestore, getDoc, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
+import { from, map, Observable } from 'rxjs';
 import { Drawing } from './drawing';
 
 @Injectable({
@@ -18,6 +18,16 @@ export class DrawingService {
   getDrawing(id: string): Observable<Drawing> {
     return docData(doc(this.firestore, `drawings/${id}`), { idField: 'id' }) as Observable<Drawing>;
   }
+
+  getDrawingsByWriter(writer_id: string): Observable<Drawing[]> {
+    const usersRef = collection(this.firestore, 'drawings');
+    const q = query(usersRef, where('writer_id', '==', writer_id));
+    
+    return collectionData(q, { idField: 'id' }).pipe(
+      map(data => data as Drawing[])
+    );
+  }
+
   
   addDrawing(drawing: Drawing): Observable<string> {
     return from(addDoc(this.collection, drawing).then(resp => resp.id));

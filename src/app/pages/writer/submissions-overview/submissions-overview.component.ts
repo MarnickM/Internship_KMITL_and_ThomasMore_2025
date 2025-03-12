@@ -5,6 +5,8 @@ import { Drawing } from "../../../services/drawings/drawing";
 import { TopicService } from "../../../services/topics/topic-service.service";
 import { CommonModule } from "@angular/common";
 import { LabelService } from "../../../services/labels/label-service.service";
+import { UserService } from "../../../services/users/user-service.service";
+import { AuthService } from "../../../services/auth.service";
 
 @Component({
   selector: 'app-submissions-overview',
@@ -18,13 +20,19 @@ export class SubmissionsOverviewComponent {
 
   drawings: Drawing[] | undefined;
 
-  constructor(private drawingService: DrawingService, private topicService: TopicService, private router: Router, private labelService: LabelService) { }
+  constructor(private drawingService: DrawingService, private topicService: TopicService, private router: Router, private labelService: LabelService, private userService: UserService, private authService: AuthService) { }
 
   ngOnInit() {
-    this.drawingService.getDrawings().subscribe(drawings => {
-      this.drawings = drawings;
+    this.userService.getUserByEmail(this.authService.getUser().email).subscribe(user => {
+      if (user) {
+        if (user.id) {
+          this.drawingService.getDrawingsByWriter(user.id).subscribe(drawings => {
+            this.drawings = drawings;
+          });
+        }
+      }
     });
-  }
+}
 
 
   currentPage = 1;
