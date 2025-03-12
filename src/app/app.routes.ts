@@ -22,7 +22,7 @@ export const routes: Routes = [
     { path: 'submissions-overview', component: SubmissionsOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['dfaNnrXgH6bqFys0Sw44'] } },
     // Manager
     { path: 'topic-management', component: TopicManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id] } },
-    { path: 'writer-management', component: WriterManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id] } },
+    { path: 'writer-management', component: WriterManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id, environment.admin_role_id] } },
     { path: 'manager-overview', component: ManagerOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id] } },
     // Admin
     { path: 'manager-management', component: ManagerManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.admin_role_id] } },

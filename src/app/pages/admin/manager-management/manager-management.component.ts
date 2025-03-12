@@ -90,11 +90,6 @@ export class ManagerManagementComponent {
     });
   }
 
-  editUser(user: User) {
-    // Implement edit logic here, e.g., open a modal or navigate to an edit page
-    console.log('Edit user:', user);
-  }
-
   changePage(page: number) {
     this.currentPage = page;
   }
