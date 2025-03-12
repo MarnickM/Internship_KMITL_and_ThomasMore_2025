@@ -12,14 +12,17 @@ import { TopicManagementComponent } from './pages/manager/topic-management/topic
 import { WriterManagementComponent } from './pages/manager/writer-management/writer-management.component';
 import { ManagerManagementComponent } from './pages/admin/manager-management/manager-management.component';
 import { ManagerOverviewComponent } from './pages/manager/manager-overview/manager-overview.component';
+import { RoleReviewComponent } from './pages/role-review/role-review.component';
 
 export const routes: Routes = [
     // Login
     { path: '', component: LoginComponent, canActivate: [LoginGuard] },
+    // Role Review
+    { path: 'role-review', component: RoleReviewComponent, canActivate: [RoleGuard], data: { roles: [environment.no_role] } },
     // Writer
-    { path: 'topic-overview', component: TopicOverviewComponent, canActivate: [AuthGuard] },
-    { path: 'drawing', component: DrawingComponent, canActivate: [AuthGuard] },
-    { path: 'submissions-overview', component: SubmissionsOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['dfaNnrXgH6bqFys0Sw44'] } },
+    { path: 'topic-overview', component: TopicOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.writer_role_id] } },
+    { path: 'drawing', component: DrawingComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.writer_role_id, environment.manager_role_id] } },
+    { path: 'submissions-overview', component: SubmissionsOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.writer_role_id] } },
     // Manager
     { path: 'topic-management', component: TopicManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id] } },
     { path: 'writer-management', component: WriterManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id, environment.admin_role_id] } },

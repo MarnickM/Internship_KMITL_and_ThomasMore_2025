@@ -24,7 +24,7 @@ export class DrawingComponent {
   private ctx!: CanvasRenderingContext2D;
   private drawing = false;
   public coordinates: { x: number; y: number }[] = [];
-  topic: Topic = { id: '', name: '' };
+  topic: Topic = { id: '', name: '', creator_email: 'senneke3112@gmail.com' };
 
   selectedOption: string = '';
   dropdownOptions: string[] = []
@@ -43,7 +43,7 @@ export class DrawingComponent {
   updateDrawing: boolean = false;
   drawingID: string = '';
 
-  constructor(private route: ActivatedRoute, private labelService: LabelService, private drawingService: DrawingService, private userService: UserService, private authService: AuthService) { 
+  constructor(private route: ActivatedRoute, private labelService: LabelService, private drawingService: DrawingService, private userService: UserService, private authService: AuthService) {
     // Access the query parameters
     this.route.queryParams.subscribe(params => {
 
@@ -178,8 +178,8 @@ export class DrawingComponent {
     this.drawingObject.writer_id = user.id || '';
     console.log('User found: ', user.id);
   }
-  
-  
+
+
 
   async submitDrawing() {
     this.drawingObject.label_id = this.labelId;
