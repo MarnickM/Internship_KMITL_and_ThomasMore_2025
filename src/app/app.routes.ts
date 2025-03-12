@@ -13,6 +13,7 @@ import { WriterManagementComponent } from './pages/manager/writer-management/wri
 import { ManagerManagementComponent } from './pages/admin/manager-management/manager-management.component';
 import { ManagerOverviewComponent } from './pages/manager/manager-overview/manager-overview.component';
 import { RoleReviewComponent } from './pages/role-review/role-review.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 export const routes: Routes = [
     // Login
@@ -31,5 +32,6 @@ export const routes: Routes = [
     { path: 'manager-management', component: ManagerManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.admin_role_id] } },
     // Error pages
     { path: 'access-denied', component: AccessDeniedComponent },
-    { path: '**', redirectTo: '/access-denied' }
+    { path: 'not-found', component: NotFoundComponent },
+    { path: '**', redirectTo: '/not-found' }
 ];
