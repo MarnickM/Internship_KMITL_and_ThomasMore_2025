@@ -63,6 +63,10 @@
     <!-- Center the buttons below the modal -->
     <div class="w-full flex justify-center -mt-48">
         <app-button (click)="clearCanvas()" buttonText="Clear" class="mr-2"></app-button>
-        <app-button buttonText="Submit" (click)="submitDrawing()" class="ml-2"></app-button>
+        @if (updateDrawing) {
+            <app-button buttonText="Update" (click)="submitDrawing()" class="ml-2"></app-button>
+        }@else {
+            <app-button buttonText="Submit" (click)="submitDrawing()" class="ml-2"></app-button>
+        }
     </div>
 </div>

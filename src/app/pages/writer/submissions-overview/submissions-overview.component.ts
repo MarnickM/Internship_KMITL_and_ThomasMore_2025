@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { Drawing } from "../../../services/drawings/drawing";
 import { TopicService } from "../../../services/topics/topic-service.service";
 import { CommonModule } from "@angular/common";
+import { LabelService } from "../../../services/labels/label-service.service";
 
 @Component({
   selector: 'app-submissions-overview',
@@ -17,7 +18,7 @@ export class SubmissionsOverviewComponent {
 
   drawings: Drawing[] | undefined;
 
-  constructor(private drawingService: DrawingService, private topicService: TopicService, private router: Router) { }
+  constructor(private drawingService: DrawingService, private topicService: TopicService, private router: Router, private labelService: LabelService) { }
 
   ngOnInit() {
     this.drawingService.getDrawings().subscribe(drawings => {
@@ -52,15 +53,26 @@ export class SubmissionsOverviewComponent {
   }
 
   viewDrawing(drawing: Drawing) {
-    this.router.navigate(['/drawing'], {
-      queryParams: {
-        id: drawing.topic_id,
-        description: drawing.description,
-        vector: JSON.stringify(drawing.vector),
-        editable: false
-      }
+    this.topicService.getTopic(drawing.topic_id).subscribe(topic => {
+      this.labelService.getLabel(drawing.label_id).subscribe(label => {
+        this.router.navigate(['/drawing'], {
+          queryParams: {
+            id: drawing.id,
+            topic_id: drawing.topic_id,
+            description: drawing.description,
+            topic: topic.name,
+            vector: JSON.stringify(drawing.vector),
+            label: label.name,
+            editable: false
+          }
+        });
+      });
     });
   }
 
-
+  deleteDrawing(id: string) {
+    this.drawingService.deleteDrawing(id).subscribe(() => {
+      this.drawings = this.drawings?.filter(drawing => drawing.id !== id);
+    });
+  }
 }

@@ -13,7 +13,7 @@
                 <div class="flex flex-col justify-center items-center text-white">
                     <button class="bg-blue-500 hover:bg-blue-400 transition-all duration-100 w-20 h-full rounded-tr-md"
                     (click)="viewDrawing(drawing)">View</button>
-                    <button class="bg-red-500 hover:bg-red-400 transition-all duration-100 w-20 h-full rounded-br-md">Delete</button>
+                    <button *ngIf="drawing.id" (click)="deleteDrawing(drawing.id!)" class="bg-red-500 hover:bg-red-400 transition-all duration-100 w-20 h-full rounded-br-md">Delete</button>
                 </div>
             </div>
         }
