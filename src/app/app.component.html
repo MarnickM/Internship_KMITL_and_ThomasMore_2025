@@ -1,11 +1,8 @@
-<body class="overflow-hidden h-screen">
-    @if(loggedIn && currentRoute !== "/access-denied" && currentRoute !== "/not-found") { 
-        <app-navigation></app-navigation>
-    } 
-    <div class="relative w-full h-screen text-center">
-        <img src="https://images.pexels.com/photos/316466/pexels-photo-316466.jpeg"
-            alt="bg"
-            class="absolute top-0 left-0 w-full h-full object-cover -z-50">
+<body class="overflow-hidden h-screen flex">
+    <div class="flex-1 h-full overflow-auto">
         <router-outlet></router-outlet>
     </div>
+    @if (loggedIn && currentRoute !== "/access-denied" && currentRoute !== "/not-found") { 
+        <app-navigation class="w-80 h-full shrink-0"></app-navigation>
+    } 
 </body>

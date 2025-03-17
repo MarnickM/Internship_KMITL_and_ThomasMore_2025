@@ -1,28 +1,30 @@
 @if(loading) {
     <app-loader></app-loader>
 }
-<body class="w-full h-screen flex justify-center items-center -mt-12">
-    <script src="https://accounts.google.com/gsi/client" async></script>
-    
-	<div id="g_id_onload"
-        [attr.data-client_id]="client_id"
-        data-callback="handleCredentialResponse"
-        data-auto_prompt="false">
+<img src="https://images.pexels.com/photos/750913/pexels-photo-750913.jpeg"
+            alt="bg"
+            class="absolute top-0 left-0 w-full h-full object-cover -z-50">
+<div class="flex justify-center items-center h-screen flex-col">
+    <h1 class="text-7xl mb-7 font-stalemate">Hand Drawing App</h1>
+    <p class="text-xs absolute left-2 bottom-2">Created by students from Thomas More Geel, Belgium for KMITL, Thailand - 2025</p>
+    <div>
+        <div id="g_id_onload"
+            [attr.data-client_id]="client_id"
+            data-callback="handleCredentialResponse"
+            data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin"
+            data-type="standard"
+            data-size="large"
+            data-theme="filled_black"
+            data-text="sign_in_with"
+            data-shape="circle"
+            data-logo_alignment="left">
+        </div>
     </div>
+</div>
 
-
-    <div class="g_id_signin"
-        data-type="standard"
-        data-size="large"
-        data-theme="outline"
-        data-text="sign_in_with"
-        data-shape="rectangular"
-        data-logo_alignment="left">
-    </div>
-
-</body>
-
-
+<script src="https://accounts.google.com/gsi/client" async></script>
 <script>
 	function handleCredentialResponse(response) {
 	  console.log("Encoded JWT ID Token: " + response.credential);
