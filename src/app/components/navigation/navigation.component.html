@@ -22,7 +22,7 @@
 				</div>
 			</div>
 			<div class="w-full text-center">
-				<div class="flex justify-center items-center">
+				<div class="flex justify-center items-center mb-2">
 					<p class="text-sm no-b">Logged in as <span class="font-bold">{{ user.name }}</span></p>
 					<button (click)="toggleProfileMenu()">
 						<img *ngIf="user?.picture" [src]="user.picture" alt="Im." class="w-10 h-10 rounded-full border border-gray-300 ml-2 bg-white p-1 shadow-md">
