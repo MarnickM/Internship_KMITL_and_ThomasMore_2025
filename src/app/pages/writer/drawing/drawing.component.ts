@@ -66,7 +66,7 @@ export class DrawingComponent {
       }
 
       if (this.topic.id !== '') {
-        this.labelService.getLabelsByTopic(this.topic.id).subscribe(labels => {
+        this.labelService.getLabelsByTopic(this.topic.id || '').subscribe(labels => {
           console.log(labels)
           for (let label of labels) {
             this.dropdownOptions.push(label.name);
@@ -185,7 +185,7 @@ export class DrawingComponent {
     this.drawingObject.label_id = this.labelId;
     this.drawingObject.description = this.description;
     this.drawingObject.vector = this.coordinates;
-    this.drawingObject.topic_id = this.topic.id;
+    this.drawingObject.topic_id = this.topic.id || '';
     this.drawingObject.created_at = new Date();
     if (this.drawingID !== '') {
       this.drawingObject.id = this.drawingID;
