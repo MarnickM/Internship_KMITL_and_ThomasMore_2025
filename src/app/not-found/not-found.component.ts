@@ -13,7 +13,7 @@ export class NotFoundComponent {
     constructor( private router: Router) { }
   
     navigateToHome() {
-      this.router.navigate(['/topic-overview']);
+      this.router.navigate(['']);
     }
 
 }

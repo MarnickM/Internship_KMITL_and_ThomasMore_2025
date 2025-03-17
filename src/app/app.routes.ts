@@ -21,13 +21,13 @@ export const routes: Routes = [
     // Role Review
     { path: 'role-review', component: RoleReviewComponent, canActivate: [RoleGuard], data: { roles: [environment.no_role] } },
     // Writer
-    { path: 'topic-overview', component: TopicOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.writer_role_id] } },
-    { path: 'drawing', component: DrawingComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.writer_role_id, environment.manager_role_id] } },
-    { path: 'submissions-overview', component: SubmissionsOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.writer_role_id] } },
+    { path: 'topic-overview', component: TopicOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.writer_role_id, environment.manager_role_id, environment.admin_role_id] } },
+    { path: 'drawing', component: DrawingComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.writer_role_id, environment.manager_role_id, environment.admin_role_id] } },
+    { path: 'submissions-overview', component: SubmissionsOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.writer_role_id, environment.admin_role_id] } },
     // Manager
-    { path: 'topic-management', component: TopicManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id] } },
+    { path: 'topic-management', component: TopicManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id, environment.admin_role_id] } },
     { path: 'writer-management', component: WriterManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id, environment.admin_role_id] } },
-    { path: 'manager-overview', component: ManagerOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id] } },
+    { path: 'manager-overview', component: ManagerOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id, environment.admin_role_id] } },
     // Admin
     { path: 'manager-management', component: ManagerManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.admin_role_id] } },
     // Error pages

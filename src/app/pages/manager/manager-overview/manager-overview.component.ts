@@ -4,6 +4,8 @@ import { Drawing } from '../../../services/drawings/drawing';
 import { TopicService } from '../../../services/topics/topic-service.service';
 import { DrawingService } from '../../../services/drawings/drawing-service.service';
 import { AuthService } from '../../../services/auth.service';
+import { LabelService } from '../../../services/labels/label-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-manager-overview',
@@ -16,10 +18,13 @@ export class ManagerOverviewComponent implements OnInit {
   topics: Topic[] = [];
   drawingsByTopic: { [key: string]: Drawing[] } = {};
 
+
   constructor(
     private topicService: TopicService,
     private drawingService: DrawingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private labelService: LabelService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -30,9 +35,9 @@ export class ManagerOverviewComponent implements OnInit {
 
           topics.forEach(topic => {
             this.drawingService.getDrawings().subscribe(drawings => {
-              this.drawingsByTopic[topic.id] = drawings.filter(d => d.topic_id === topic.id);
+              this.drawingsByTopic[topic.id || ''] = drawings.filter(d => d.topic_id === topic.id);
               console.log(topic.id)
-              console.log(this.drawingsByTopic[topic.id])
+              console.log(this.drawingsByTopic[topic.id || ''])
             });
           });
         });
@@ -40,8 +45,33 @@ export class ManagerOverviewComponent implements OnInit {
     });
   }
 
+  deleteDrawing(id: string, topic_id: string) {
+    this.drawingService.deleteDrawing(id).subscribe(() => {
+      if (this.drawingsByTopic[topic_id]) {
+        this.drawingsByTopic[topic_id] = this.drawingsByTopic[topic_id].filter(drawing => drawing.id !== id);
+      }
+    });
+  }
+
+  viewDrawing(drawing: Drawing, topic_name: string, topic_id: string) {
+      this.labelService.getLabel(drawing.label_id).subscribe(label => {
+        this.router.navigate(['/drawing'], {
+          queryParams: {
+            id: drawing.id,
+            topic_id: topic_id,
+            description: drawing.description,
+            topic: topic_name,
+            vector: JSON.stringify(drawing.vector),
+            label: label.name,
+            editable: false
+          }
+        });
+      });
+  }
+  
+
   downloadCSV(topic: Topic) {
-    const drawings = this.drawingsByTopic[topic.id] || [];
+    const drawings = this.drawingsByTopic[topic.id || ''] || [];
     const drawingCount = drawings.length;
 
     // Create an array of objects where each object represents a row in the CSV
