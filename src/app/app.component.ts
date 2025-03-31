@@ -5,11 +5,12 @@ import { AuthService } from './services/auth.service';
 import { AngularFaviconService } from 'angular-favicon';
 import { environment } from '../environments/environments';
 import { UserService } from './services/users/user-service.service';  // Import the UserService
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavigationComponent],
+  imports: [RouterOutlet, NavigationComponent, CommonModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
@@ -19,6 +20,7 @@ export class AppComponent implements OnInit {
   favicon: string = environment.favicon_url;
   userRole: string = '';  // Variable to store the user's role
   currentRoute: string = '';  // Variable to store the current route
+  menuOpen: boolean = true;  // Variable to control the menu state
 
   constructor(
     private authService: AuthService,
@@ -49,7 +51,7 @@ export class AppComponent implements OnInit {
         }
       }
     });
-
+    
     // Capture the current route whenever it changes
     this.router.events.subscribe(event => {
       if (event.constructor.name === 'NavigationEnd') {
@@ -57,5 +59,9 @@ export class AppComponent implements OnInit {
         console.log('Current Route:', this.currentRoute);
       }
     });
+  }
+  
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
   }
 }

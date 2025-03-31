@@ -50,15 +50,19 @@
 
         <!-- Right side: Drawing panel -->
         <div class="flex-1">
-            <p class="text-sm font-medium text-gray-700 mb-2">Drawing area</p>
-            <canvas #drawingCanvas
-                (mousedown)="startDrawing($event)"
-                (mousemove)="draw($event)"
-                (mouseup)="stopDrawing()"
-                (mouseleave)="stopDrawing()"
-                class="rounded-md w-full h-64 border border-black bg-white">
-            </canvas>
-        </div>
+            <p class="text-sm font-medium text-gray-700 mb-2">Drawing area (400x400)</p>
+            <div class="hidden sm:hidden md:hidden lg:block"> <!-- Hide on small screens -->
+                <canvas #drawingCanvas
+                    (mousedown)="startDrawing($event)"
+                    (mousemove)="draw($event)"
+                    (mouseup)="stopDrawing()"
+                    (mouseleave)="stopDrawing()"
+                    class="rounded-md border border-black bg-white m-auto"
+                    width="400" height="400">
+                </canvas>
+            </div>
+            <p class="text-red-500 text-sm text-center lg:hidden">Screen too small to display drawing area.</p>
+        </div>        
     </div>
 
     <!-- Center the buttons below the modal -->

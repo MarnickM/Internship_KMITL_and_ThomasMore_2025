@@ -14,6 +14,8 @@ import { ManagerManagementComponent } from './pages/admin/manager-management/man
 import { ManagerOverviewComponent } from './pages/manager/manager-overview/manager-overview.component';
 import { RoleReviewComponent } from './pages/role-review/role-review.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { SketchGeneratorComponent } from './sketch-generator/sketch-generator.component';
+// import { AutoSketchComponent } from './autosketch/autosketch.component';
 
 export const routes: Routes = [
     // Login
@@ -30,6 +32,8 @@ export const routes: Routes = [
     { path: 'manager-overview', component: ManagerOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id, environment.admin_role_id] } },
     // Admin
     { path: 'manager-management', component: ManagerManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.admin_role_id] } },
+    { path:'sketch-generator', component: SketchGeneratorComponent },
+    // { path:'auto-sketch', component: AutoSketchComponent },
     // Error pages
     { path: 'access-denied', component: AccessDeniedComponent },
     { path: 'not-found', component: NotFoundComponent },
