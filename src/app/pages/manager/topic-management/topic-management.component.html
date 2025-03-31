@@ -1,41 +1,19 @@
 <div class="container mx-auto p-4 bg-white">
-    <!-- Add/Edit Topic Form -->
-    <div class="mb-6">
-        <h2 class="text-2xl font-semibold mb-4 text-black">
-            {{ currentTopic ? 'Edit Topic' : 'Add New Topic' }}
-        </h2>
-
-        <div class="flex space-x-4">
-            <input [(ngModel)]="topicName"
-                placeholder="Enter Topic Name"
-                class="px-4 py-2 border border-black rounded-md w-1/2 text-black bg-white placeholder-gray-500">
-            <button (click)="currentTopic ? updateTopic() : addTopic()"
-                class="px-6 py-2 bg-black text-white rounded-md hover:bg-gray-800">
-                {{ currentTopic ? 'Update' : 'Add' }} Topic
-            </button>
-            @if(currentTopic) {
-                <button
-                    (click)="cancelEdit()"
-                    class="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">
-                    Cancel
-                </button>
-            }
-        </div>
-    </div>
-
     @if(topics.length > 0) {
         <div>
-            <h3 class="text-xl font-semibold mb-4 text-black">Your Topics:</h3>
+            <div class="flex justify-between">
+                <h3 class="text-xl font-semibold mb-4 text-black">Your Topics:</h3>
+                <button (click)="openAddEditModal()" class="px-6 py-2 mb-4 bg-black text-white rounded-md hover:bg-gray-800">
+                    Add topic
+                </button>
+            </div>
+            
             <ul>
                 @for(topic of topics; track $index) {
                     <li
                         class="flex items-center justify-between mb-4 p-4 bg-white rounded-md shadow-md border border-black">
                         <div>
                             <h4 class="text-lg font-semibold text-black">{{ topic.name }}</h4>
-                            <!-- Display count of drawings for the topic -->
-                            <p class="text-sm text-gray-700">
-                                Drawings: Count
-                            </p>
                         </div>
                         <div class="flex space-x-4">
                             <button (click)="addLabel(topic.id || '', topic.name); $event.stopPropagation()"
@@ -79,6 +57,30 @@
                 </div>
             </div>
         </div>
+    }
+
+    @if(addEditModal) {
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96 border border-black">
+                <h3 class="text-lg font-semibold mb-4 text-black">{{ currentTopic ? 'Edit Topic' : 'Add New Topic' }}</h3>
+                <input [(ngModel)]="topicName"
+                    placeholder="Enter Topic Name"
+                    class="w-full px-4 py-2 border border-black rounded-md text-black bg-white placeholder-gray-500 mb-4">
+                
+                <div class="flex space-x-4">
+                    <button (click)="currentTopic ? updateTopic() : addTopic()"
+                        class="w-full px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800">
+                        {{ currentTopic ? 'Edit Topic' : 'Add Topic' }}
+                    </button>
+                    <button (click)="openAddEditModal()"
+                        class="w-full px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        
     }
 
     @if(labelModalVisible) {
