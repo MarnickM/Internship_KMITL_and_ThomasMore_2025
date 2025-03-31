@@ -24,6 +24,8 @@ export class TopicManagementComponent implements OnInit {
   deleteModalVisible: boolean = false;
   topicToDeleteId: string | null = null;
 
+  addEditModal: boolean = false;
+
   labelModalVisible: boolean = false;
   currentTopicName: string = "";
   labelsByTopic: { [key: string]: { id: string; name: string }[] } = {};
@@ -54,6 +56,13 @@ export class TopicManagementComponent implements OnInit {
     });
   }
 
+  openAddEditModal() {
+    this.addEditModal = !this.addEditModal;
+    this.currentTopic = null
+    this.topicName = ''
+  }
+
+
   addTopic() {
     if (this.topicName.trim() && this.currentUserEmail) {
       const newTopic: Topic = {
@@ -66,59 +75,61 @@ export class TopicManagementComponent implements OnInit {
         this.topicName = ''; // Reset the input field
       });
     }
+
+    this.addEditModal = false;
   }
 
   addLabel(topic_id: string, topic_name: string) {
     console.log("addLabel triggered"); // Debugging log
     if (this.labelModalVisible) return;
-  
+
     this.newLabel = { topic_id: topic_id, name: "" }; // Reset new label input
     this.currentTopicName = topic_name;
     this.labelModalVisible = true;
-  
+
     // Fetch labels for this topic and store them in the dictionary
     this.labelService.getLabelsByTopic(topic_id).subscribe((labels) => {
       console.log("Labels from Firebase:", labels);
       const updatedLabels = []; // Create a new array for the labels
-  
+
       // Assuming Firebase returns an array of label objects with `id` and `name`
       for (let label of labels) {
         const labelItem = { id: label.id as string, name: label.name }; // Use the correct `id` and `name`
         updatedLabels.push(labelItem);
       }
-  
+
       this.labelsByTopic = { ...this.labelsByTopic, [topic_id]: updatedLabels }; // Immutable update
       console.log("Labels by topic:", this.labelsByTopic);
     });
   }
-  
+
 
   saveLabel() {
     if (!this.newLabel.name.trim()) return; // Prevent empty label submission
-  
+
     this.labelService.addLabel(this.newLabel).subscribe((id) => {
       console.log("New label ID:", id);
       const newLabel = { id: id, name: this.newLabel.name }; // Create full label object with Firebase-generated ID
-  
+
       // Ensure labelsByTopic is initialized for this topic
       if (!this.labelsByTopic[this.newLabel.topic_id]) {
         this.labelsByTopic[this.newLabel.topic_id] = [];
       }
-  
+
       this.labelsByTopic[this.newLabel.topic_id].push(newLabel); // Update dictionary
       this.newLabel.name = ""; // Reset input
-  
+
       // Manually trigger change detection
     });
   }
-  
+
 
   updateLabel(label: { id: string; name: string }, topic_id: string) {
     var updatedlabel = { id: "", name: "", topic_id: "" };
     updatedlabel.id = label.id;
     updatedlabel.name = label.name;
     updatedlabel.topic_id = topic_id;
-    
+
     this.labelService.updateLabel(updatedlabel).subscribe(() => {
       // Update the label in our dictionary
       const topicLabels = this.labelsByTopic[topic_id];
@@ -126,10 +137,13 @@ export class TopicManagementComponent implements OnInit {
       if (index !== -1) {
         topicLabels[index] = { ...label }; // Ensure it's properly updated
       }
+
     });
+
+
   }
-  
-  
+
+
   deleteLabel(label_id: string, topic_id: string) {
     this.labelService.deleteLabel(label_id).subscribe(() => {
       if (this.labelsByTopic[topic_id]) {
@@ -138,12 +152,13 @@ export class TopicManagementComponent implements OnInit {
       }
     });
   }
-  
-  
+
+
 
   editTopic(topic: Topic) {
     this.currentTopic = { ...topic }; // Create a copy of the topic for editing
     this.topicName = this.currentTopic.name
+    this.addEditModal = true
   }
 
   updateTopic() {
@@ -156,6 +171,7 @@ export class TopicManagementComponent implements OnInit {
           this.currentTopic = null;
           this.topicName = '';
         }
+        this.addEditModal = false;
       });
     }
   }
