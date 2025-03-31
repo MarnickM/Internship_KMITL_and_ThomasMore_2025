@@ -18,6 +18,7 @@ export class NavigationComponent implements OnInit {
   loggedIn: boolean = false;
   user: any = null; // Store user details
   userRole: string = ''; // Store user role
+  menuOpen = false;
 
   constructor(
     private authService: AuthService,
@@ -59,6 +60,10 @@ export class NavigationComponent implements OnInit {
       window.location.reload();
     });
   }
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }  
 
   toggleProfileMenu() {
     this.profileMenuOpen = !this.profileMenuOpen;
