@@ -6,6 +6,7 @@ import { DrawingService } from '../../../services/drawings/drawing-service.servi
 import { AuthService } from '../../../services/auth.service';
 import { LabelService } from '../../../services/labels/label-service.service';
 import { Router } from '@angular/router';
+import { AngularCsv } from 'angular-csv-ext/dist/Angular-csv';
 
 @Component({
   selector: 'app-manager-overview',
@@ -54,70 +55,51 @@ export class ManagerOverviewComponent implements OnInit {
   }
 
   viewDrawing(drawing: Drawing, topic_name: string, topic_id: string) {
-      this.labelService.getLabel(drawing.label_id).subscribe(label => {
-        this.router.navigate(['/drawing'], {
-          queryParams: {
-            id: drawing.id,
-            topic_id: topic_id,
-            description: drawing.description,
-            topic: topic_name,
-            vector: JSON.stringify(drawing.vector),
-            label: label.name,
-            editable: false
-          }
-        });
+    this.labelService.getLabel(drawing.label_id).subscribe(label => {
+      this.router.navigate(['/drawing'], {
+        queryParams: {
+          id: drawing.id,
+          topic_id: topic_id,
+          description: drawing.description,
+          topic: topic_name,
+          vector: JSON.stringify(drawing.vector),
+          label: label.name,
+          editable: false
+        }
       });
+    });
   }
-  
 
-  downloadCSV(topic: Topic) {
+
+  downloadCSV(topic: any) {
     const drawings = this.drawingsByTopic[topic.id || ''] || [];
+    const filename = topic.name + "_overview"
     const drawingCount = drawings.length;
 
     // Create an array of objects where each object represents a row in the CSV
     const csvData = drawings.map(drawing => ({
-      "Topic Name": topic.name,
-      "Drawing Count": drawingCount,
       "Drawing ID": drawing.id || 'N/A',
       "Description": drawing.description,
       "Writer ID": drawing.writer_id,
-      "Created At": new Date(drawing.created_at).toLocaleString(),
       "Vector Coordinates": drawing.vector.map(v => `(${v.x}, ${v.y})`).join('; ')
     }));
 
-    // Convert the array of objects into a CSV format
-    const csvContent = this.convertToCSV(csvData);
+    // Set CSV export options
+    const options = {
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalseparator: '.',
+      showLabels: true,
+      showTitle: true,
+      title: `Overview of ${topic.name}, Total drawings: ${drawingCount}`,
+      useBom: true,
+      noDownload: false,
+      headers: ["Drawing ID", "Description", "Writer ID", "Vector Coordinates"],
+      useHeader: false,
+      nullToEmptyString: true,
+    };
 
-    // Create a blob from the CSV content and trigger download
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-
-    a.href = url;
-    a.download = `${topic.name}_drawings.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    // Export to CSV
+    new AngularCsv(csvData, filename, options);
   }
-
-  // Function to convert an array of objects to CSV format
-  convertToCSV(array: any[]): string {
-    const arrayCopy = [...array];
-    const header = Object.keys(arrayCopy[0]);
-    const csvRows = [];
-
-    // Add header to CSV
-    csvRows.push(header.join(','));
-
-    // Add data to CSV
-    arrayCopy.forEach(row => {
-      const values = header.map(fieldName => {
-        const value = row[fieldName];
-        return `"${value}"`; // Wrap each value in quotes to handle commas, etc.
-      });
-      csvRows.push(values.join(','));
-    });
-
-    return csvRows.join('\n');
-  }
-
 }

@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "^18.1.0",
     "@angular/router": "^18.1.0",
     "@magenta/sketch": "^0.2.0",
+    "angular-csv-ext": "^1.0.5",
     "angular-favicon": "^1.0.9",
     "p5": "^1.11.3",
     "rxjs": "~7.8.0",
