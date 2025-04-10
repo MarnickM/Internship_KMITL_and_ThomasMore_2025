@@ -91,6 +91,12 @@ export class DrawingComponent {
     if (this.coordinates.length > 0) {
       this.drawStoredCoordinates();
     }
+
+
+    this.canvas.nativeElement.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
+    this.canvas.nativeElement.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+    this.canvas.nativeElement.addEventListener('touchend', this.handleTouchEnd.bind(this));
+    this.canvas.nativeElement.addEventListener('touchcancel', this.handleTouchEnd.bind(this));
   }
   
 
@@ -223,4 +229,47 @@ export class DrawingComponent {
   toggleSuccess() {
     this.success = !this.success;
   }
+
+
+
+
+
+  // -------------------------------------------------------------
+
+
+  private getTouchPosition(event: TouchEvent) {
+    const rect = this.canvas.nativeElement.getBoundingClientRect();
+    const touch = event.touches[0] || event.changedTouches[0];
+    return {
+      x: (touch.clientX - rect.left) * (this.canvas.nativeElement.width / rect.width),
+      y: (touch.clientY - rect.top) * (this.canvas.nativeElement.height / rect.height)
+    };
+  }
+  
+  handleTouchStart(event: TouchEvent) {
+    event.preventDefault();
+    const pos = this.getTouchPosition(event);
+    this.drawing = true;
+    this.coordinates.push(pos);
+    this.ctx.beginPath();
+    this.ctx.moveTo(pos.x, pos.y);
+  }
+  
+  handleTouchMove(event: TouchEvent) {
+    if (!this.drawing) return;
+    event.preventDefault();
+    const pos = this.getTouchPosition(event);
+    this.coordinates.push(pos);
+    this.ctx.lineTo(pos.x, pos.y);
+    this.ctx.stroke();
+  }
+  
+  handleTouchEnd(event: TouchEvent) {
+    if (this.drawing) {
+      this.coordinates.push({ x: -1000, y: -1000 });
+      this.ctx.closePath();
+    }
+    this.drawing = false;
+  }
+  
 }
