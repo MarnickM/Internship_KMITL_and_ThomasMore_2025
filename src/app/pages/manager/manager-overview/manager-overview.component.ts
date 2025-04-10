@@ -33,18 +33,17 @@ export class ManagerOverviewComponent implements OnInit {
       if (user?.email) {
         this.topicService.getTopicsByCreatorEmail(user.email).subscribe(topics => {
           this.topics = topics;
-
+  
           topics.forEach(topic => {
             this.drawingService.getDrawings().subscribe(drawings => {
               this.drawingsByTopic[topic.id || ''] = drawings.filter(d => d.topic_id === topic.id);
-              console.log(topic.id)
-              console.log(this.drawingsByTopic[topic.id || ''])
             });
           });
         });
       }
     });
   }
+  
 
   deleteDrawing(id: string, topic_id: string) {
     this.drawingService.deleteDrawing(id).subscribe(() => {
@@ -55,6 +54,7 @@ export class ManagerOverviewComponent implements OnInit {
   }
 
   viewDrawing(drawing: Drawing, topic_name: string, topic_id: string) {
+    console.log("View drawing: ", drawing);
     this.labelService.getLabel(drawing.label_id).subscribe(label => {
       this.router.navigate(['/drawing'], {
         queryParams: {
