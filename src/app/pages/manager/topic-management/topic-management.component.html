@@ -34,7 +34,7 @@
                             <h4 class="text-lg font-semibold text-black">{{ topic.name }}</h4>
                             <!-- Display count of drawings for the topic -->
                             <p class="text-sm text-gray-700">
-                                Drawings: Count
+                                Drawings: {{ drawingsCountByTopic[topic.id || 0] || 0 }}
                             </p>
                         </div>
                         <div class="flex space-x-4">

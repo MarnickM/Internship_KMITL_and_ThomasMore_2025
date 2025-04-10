@@ -31,7 +31,6 @@ export class DrawingComponent {
   description: string = '';
   error: boolean = false;
   success: boolean = false;
-  labelId: string = '';
   drawingObject: Drawing = {
     writer_id: '',
     label_id: '',
@@ -42,6 +41,8 @@ export class DrawingComponent {
   }
   updateDrawing: boolean = false;
   drawingID: string = '';
+  label_id_pairs: { [key: string]: string } = {}
+
 
   constructor(private route: ActivatedRoute, private labelService: LabelService, private drawingService: DrawingService, private userService: UserService, private authService: AuthService) {
     // Access the query parameters
@@ -67,11 +68,16 @@ export class DrawingComponent {
 
       if (this.topic.id !== '') {
         this.labelService.getLabelsByTopic(this.topic.id || '').subscribe(labels => {
-          console.log(labels)
+          console.log(labels);
+          
           for (let label of labels) {
-            this.dropdownOptions.push(label.name);
-            this.labelId = label.id || '';
-            console.log(label.name)
+            // Check if label.name is already in dropdownOptions
+            if (!this.dropdownOptions.includes(label.name)) {
+              this.dropdownOptions.push(label.name);
+              this.label_id_pairs[label.name] = label.id ?? '';
+            } else {
+              console.log(`Label "${label.name}" already exists in dropdown options.`);
+            }
           }
         });
       }
@@ -188,7 +194,7 @@ export class DrawingComponent {
 
 
   async submitDrawing() {
-    this.drawingObject.label_id = this.labelId;
+    this.drawingObject.label_id = this.label_id_pairs[this.selectedOption] || '';
     this.drawingObject.description = this.description;
     this.drawingObject.vector = this.coordinates;
     this.drawingObject.topic_id = this.topic.id || '';
@@ -208,7 +214,9 @@ export class DrawingComponent {
       return;
     }
 
-    // console.log(this.drawingObject)
+    console.log(this.drawingObject)
+
+    console.log(this.drawingObject)
     if (!this.updateDrawing) {
       this.drawingService.addDrawing(this.drawingObject).subscribe(id => {
         console.log('Drawing added with id: ', id);

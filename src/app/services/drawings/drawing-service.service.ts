@@ -28,6 +28,15 @@ export class DrawingService {
     );
   }
 
+  getDrawingsByTopic(topic_id: string): Observable<Drawing[]> {
+    const usersRef = collection(this.firestore, 'drawings');
+    const q = query(usersRef, where('topic_id', '==', topic_id));
+    
+    return collectionData(q, { idField: 'id' }).pipe(
+      map(data => data as Drawing[])
+    );
+  }
+
   
   addDrawing(drawing: Drawing): Observable<string> {
     return from(addDoc(this.collection, drawing).then(resp => resp.id));

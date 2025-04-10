@@ -5,7 +5,6 @@ import { Topic } from '../../../services/topics/topic';
 import { DrawingService } from '../../../services/drawings/drawing-service.service';
 import { FormsModule } from '@angular/forms';
 import { LabelService } from '../../../services/labels/label-service.service';
-import { Label } from '../../../services/labels/label';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -17,6 +16,7 @@ import { CommonModule } from '@angular/common';
 })
 export class TopicManagementComponent implements OnInit {
   topics: Topic[] = [];
+  drawingsCountByTopic: { [key: string]: number } = {};  // Store drawing count per topic
   drawings: any[] = []; // Store all drawings here
   currentTopic: Topic | null = null;
   topicName: string = '';
@@ -42,12 +42,22 @@ export class TopicManagementComponent implements OnInit {
         this.currentUserEmail = user.email;
         this.topicService.getTopicsByCreatorEmail(user.email).subscribe(topics => {
           this.topics = topics;
-          this.loadDrawings(); // Fetch all drawings after topics are loaded
+          this.loadDrawingsCount(); // Fetch the drawings count for each topic after topics are loaded
         });
       }
     });
   }
 
+  loadDrawingsCount() {
+    if (this.topics.length !== 0) {
+      this.topics.forEach(topic => {
+        // Use the drawing service to get the drawings by topic
+        this.drawingService.getDrawingsByTopic(topic.id!).subscribe(drawings => {
+          this.drawingsCountByTopic[topic.id!] = drawings.length; // Store the count of drawings per topic
+        });
+      });
+    }
+  }
   loadDrawings() {
     this.drawingService.getDrawings().subscribe(drawings => {
       this.drawings = drawings;
