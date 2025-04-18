@@ -210,7 +210,7 @@ export class DrawingComponent {
     }
 
     if (this.drawingObject.label_id === '') {
-      this.error = true;
+      this.toggleError();
       return;
     }
 
@@ -220,22 +220,28 @@ export class DrawingComponent {
     if (!this.updateDrawing) {
       this.drawingService.addDrawing(this.drawingObject).subscribe(id => {
         console.log('Drawing added with id: ', id);
-        this.success = true;
+        this.toggleSuccess();
       });
     }
     else {
       this.drawingService.updateDrawing(this.drawingObject).subscribe(() => {
         console.log('Drawing updated');
-        this.success = true;
+        this.toggleSuccess();
       });
     }
   }
 
   toggleError() {
     this.error = !this.error;
+    setTimeout(() => {
+      this.error = false;
+    }, 3000); // Hide the error message after 3 seconds
   }
   toggleSuccess() {
     this.success = !this.success;
+    setTimeout(() => {
+      this.success = false;
+    }, 3000); // Hide the success message after 3 seconds
   }
 
 
