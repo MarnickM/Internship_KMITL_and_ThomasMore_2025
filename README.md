@@ -72,15 +72,21 @@ npm install
 ```
 
 ### **3️⃣ Configure Firebase (Database & Hosting)**  
-1. Set up **Firestore Database** in Firebase Console.  
-2. Update Firebase config in:  
-   - `src/environments/environment.ts` (dev)  
-   - `src/environments/environment.prod.ts` (prod)  
+#### **Database**
+1. Set up **Firestore Database** in Firebase Console.
+2. Add config provided by Firebase in src/app/app.config.ts
+#### **Hosting**
+1. Set up **Firebase Hosting** in Firebase Console.
+2. install Firebase CLI in angular project
+3. run `firebase login` and `firebase init` in the CLI console
+4. Update Firebase config in:  
+   - `src/firebase.json`
+   - `.firebaserc`
 
 ### **4️⃣ Configure Google Sign-In**  
-- Update Google OAuth credentials in:  
-  - `src/app/google_signin.service.ts`  
-  - Any related config files for your custom auth flow.  
+- Create a Google OAuth project in the Google Console
+- Update Google OAuth credentials in:
+  - `src/app/app.config.ts` & `src/environments/environment.ts` (you may need to create the env file yourself since this won't be pushed to Github)
 
 ### **5️⃣ Run Locally**  
 ```bash
@@ -90,7 +96,7 @@ Visit `http://localhost:4200`.
 
 ### **6️⃣ Deploy to Firebase Hosting**  
 ```bash
-ng build --production
+ng build
 firebase deploy
 ```
 
@@ -100,22 +106,46 @@ firebase deploy
 ```
 src/
 ├── app/
-│   ├── services/          # Firebase Firestore services & data models  
-│   ├── google_signin/     # Custom Google Sign-In implementation  
-│   ├── app.routes.ts      # Routing configuration  
-│   └── ...                # Components for each page  
+│ ├── components/ # Reusable UI components
+│ │ ├── navbar/ # Navigation bar component
+│ │ ├── buttons/ # Custom button components
+│ │ └── loader/ # Loading spinner/indicator
+│ │
+│ ├── pages/ # Page components (one per route)
+│ │ ├── login/ # Login page (Google Sign-In)
+│ │ ├── role-review/ # Role assignment waiting page
+│ │ ├── topic-overview/ # Main topics listing
+│ │ └── ... # Other pages from feature list
+│ │
+│ ├── services/ # Data services & models
+│ │ ├── topic.service.ts # Topic CRUD operations
+│ │ ├── drawing.service.ts # Drawing management
+│ │ ├── user.service.ts # User role management
+│ │ └── ... # Other services from feature list
+│ │
+├────  # Custom auth implementation
+│ │ ├── google-auth.service.ts # OAuth handling
+│ │ └── app/services/auth.guard.ts # Route protection
+│ │
+│ ├── experiments/ # AI drawing features
+│ │ ├── autosketch/ # AI-assisted drawing completion
+│ │ └── sketch-generator/ # AI shape generation
+│ │
+│ ├── app.routes.ts # Routing configuration
+│ ├── app.config.ts # App-wide settings
+│ └── ...
+│
+├── assets/ # Static files
+├── environments/ # Firebase configs
+└── ...
 ```
+### Key Directories Explained:
+- **`components/`** - Reusable presentational components (dumb components)
+- **`pages/`** - Route-connected smart components (one per application page)
+- **`services/`** - Firebase data operations and business logic
+- **`experiments/`** - AI-powered drawing features (optional/developmental)
+- **`google_signin/`** - Custom authentication flow (separate from Firebase Auth)
+
 
 ---
-
-## **📜 License**  
-MIT  
-
----
-
-**❓ Need Help?**  
-Open a GitHub issue or contact me!  
-
-*(Replace placeholder links, screenshots, and config details with your actual project info.)*  
-
 🎨 **Built with Angular & Firebase** | 🔌 **Custom Google Auth**
