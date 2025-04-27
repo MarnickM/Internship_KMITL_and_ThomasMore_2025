@@ -49,7 +49,7 @@ An **Angular-based** web application where users with different roles (**Writer*
 - **Frontend**: Angular, TypeScript  
 - **Database**: Firebase Firestore  
 - **Hosting**: Firebase Hosting  
-- **Authentication**: Custom Google Sign-In (separate from Firebase Auth)  
+- **Authentication**: Custom Google Sign-In with Angular Guards (separate from Firebase Auth)  
 
 ---
 
