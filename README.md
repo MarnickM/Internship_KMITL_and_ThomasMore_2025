@@ -62,7 +62,7 @@ An **Angular-based** web application where users with different roles (**Writer*
 
 ### **1️⃣ Clone the Repository**  
 ```bash
-git clone https://github.com/your-repo/label-drawing-app.git
+git clone [https://github.com/your-repo/label-drawing-app.git](https://github.com/MarnickM/Thai_Internship_2025.git)
 cd label-drawing-app
 ```
 
