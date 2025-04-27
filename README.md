@@ -1,27 +1,120 @@
-# DrawingApp
+# **Label Drawing Application** 🎨✏️  
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.0.
+An **Angular-based** web application where users with different roles (**Writer**, **Manager**, **Admin**) collaborate on creating and managing labeled drawings. Uses **Firebase Firestore (Database) + Hosting** and a **separate Google Sign-In** for authentication.  
 
-## Development server
+![App Preview](https://via.placeholder.com/800x400?text=Label+Drawing+App+UI) *(Replace with actual screenshot)*  
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+---
 
-## Code scaffolding
+## **🔑 Authentication & Access Control**  
+- **Google Sign-In** (independent of Firebase Auth)  
+- **403 (Access Denied)** – Shown if a user tries to access unauthorized pages.  
+- **404 (Not Found)** – Custom 404 error page.  
+- **Role Review** – New users land here after login, waiting for **Admin/Manager** role assignment.  
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## **👥 User Roles & Pages**  
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### **👤 Everyone (Logged In)**  
+| Page | Description |
+|------|-------------|
+| **Login** | Google Sign-In (custom implementation, not Firebase Auth). |
+| **Role Review** | Temporary page until a Manager/Admin assigns a role. |
 
-## Running unit tests
+### **✍️ Writer**  
+| Page | Description |
+|------|-------------|
+| **Topic Overview** | Lists available topics. Writers select one to start drawing. |
+| **Drawing** | Canvas to draw and submit labels for the selected topic. |
+| **Submissions Overview** | View, edit, or delete their own drawings. |
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### **📋 Manager**  
+| Page | Description |
+|------|-------------|
+| **Topic Overview** | Same as Writer, but with additional management options. |
+| **Manager Overview** | View and manage all drawings submitted by Writers. |
+| **Topic Management** | Create/update/delete **topics** and their **labels**. |
+| **Writer Management** | Approve new Writers and manage their roles. |
 
-## Running end-to-end tests
+### **🛠️ Admin**  
+| Page | Description |
+|------|-------------|
+| **Manager Management** | Manage all users (assign roles: **Writer, Manager, Admin**). |
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+---
 
-## Further help
+## **🛠️ Technologies Used**  
+- **Frontend**: Angular, TypeScript  
+- **Database**: Firebase Firestore  
+- **Hosting**: Firebase Hosting  
+- **Authentication**: Custom Google Sign-In (separate from Firebase Auth)  
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
+
+## **🚀 Setup & Deployment Guide**  
+
+### **Prerequisites**  
+- Node.js (v16+)  
+- Angular CLI (`npm install -g @angular/cli`)  
+- Firebase account (for Firestore & Hosting)  
+
+### **1️⃣ Clone the Repository**  
+```bash
+git clone https://github.com/your-repo/label-drawing-app.git
+cd label-drawing-app
+```
+
+### **2️⃣ Install Dependencies**  
+```bash
+npm install
+```
+
+### **3️⃣ Configure Firebase (Database & Hosting)**  
+1. Set up **Firestore Database** in Firebase Console.  
+2. Update Firebase config in:  
+   - `src/environments/environment.ts` (dev)  
+   - `src/environments/environment.prod.ts` (prod)  
+
+### **4️⃣ Configure Google Sign-In**  
+- Update Google OAuth credentials in:  
+  - `src/app/google_signin.service.ts`  
+  - Any related config files for your custom auth flow.  
+
+### **5️⃣ Run Locally**  
+```bash
+ng serve
+```
+Visit `http://localhost:4200`.  
+
+### **6️⃣ Deploy to Firebase Hosting**  
+```bash
+ng build --production
+firebase deploy
+```
+
+---
+
+## **📂 Project Structure**  
+```
+src/
+├── app/
+│   ├── services/          # Firebase Firestore services & data models  
+│   ├── google_signin/     # Custom Google Sign-In implementation  
+│   ├── app.routes.ts      # Routing configuration  
+│   └── ...                # Components for each page  
+```
+
+---
+
+## **📜 License**  
+MIT  
+
+---
+
+**❓ Need Help?**  
+Open a GitHub issue or contact me!  
+
+*(Replace placeholder links, screenshots, and config details with your actual project info.)*  
+
+🎨 **Built with Angular & Firebase** | 🔌 **Custom Google Auth**
