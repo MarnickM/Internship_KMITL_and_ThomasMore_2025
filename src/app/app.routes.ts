@@ -14,7 +14,7 @@ import { ManagerManagementComponent } from './pages/admin/manager-management/man
 import { ManagerOverviewComponent } from './pages/manager/manager-overview/manager-overview.component';
 import { RoleReviewComponent } from './pages/role-review/role-review.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { SketchGeneratorComponent } from './sketch-generator/sketch-generator.component';
+import { SketchGeneratorComponent } from './experiments/sketch-generator/sketch-generator.component';
 // import { AutoSketchComponent } from './autosketch/autosketch.component';
 
 export const routes: Routes = [
