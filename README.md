@@ -2,8 +2,8 @@
 
 An **Angular-based** web application where users with different roles (**Writer**, **Manager**, **Admin**) collaborate on creating and managing labeled drawings. Uses **Firebase Firestore (Database) + Hosting** and a **separate Google Sign-In** for authentication.  
 
-![App Preview](![Schermafbeelding 2025-04-23 120229](https://github.com/user-attachments/assets/de6e3350-b8a8-45ce-a2a6-aedae20969d3)
-) *(Replace with actual screenshot)*  
+(![Schermafbeelding 2025-04-23 120229](https://github.com/user-attachments/assets/de6e3350-b8a8-45ce-a2a6-aedae20969d3)
+)
 
 ---
 
