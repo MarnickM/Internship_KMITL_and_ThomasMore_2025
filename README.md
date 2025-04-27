@@ -1,4 +1,4 @@
-# **Label Drawing Application** 🎨✏️  
+# **Drawing Application** 🎨✏️  
 
 An **Angular-based** web application where users with different roles (**Writer**, **Manager**, **Admin**) collaborate on creating and managing labeled drawings. Uses **Firebase Firestore (Database) + Hosting** and a **separate Google Sign-In** for authentication.  
 
