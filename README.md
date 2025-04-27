@@ -27,14 +27,14 @@ An **Angular-based** web application where users with different roles (**Writer*
 | Page | Description |
 |------|-------------|
 | **Topic Overview** | Lists available topics. Writers select one to start drawing. |
-| **Drawing** | Canvas to draw and submit labels for the selected topic. |
+| **Drawing** | Canvas to draw and submit drawings for the selected label and topic. |
 | **Submissions Overview** | View, edit, or delete their own drawings. |
 
 ### **📋 Manager**  
 | Page | Description |
 |------|-------------|
 | **Topic Overview** | Same as Writer, but with additional management options. |
-| **Manager Overview** | View and manage all drawings submitted by Writers. |
+| **Manager Overview** | View and manage all drawings submitted by Writers that belong to a topic created by the Manager currently logged in. |
 | **Topic Management** | Create/update/delete **topics** and their **labels**. |
 | **Writer Management** | Approve new Writers and manage their roles. |
 
