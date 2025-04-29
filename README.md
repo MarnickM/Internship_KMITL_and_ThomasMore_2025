@@ -135,9 +135,12 @@ src/
 │ ├── app.config.ts # App-wide settings
 │ └── ...
 │
-├── assets/ # Static files
 ├── environments/ # Firebase configs
 └── ...
+
+public/
+└── assets/ # Static files
+
 ```
 ### Key Directories Explained:
 - **`components/`** - Reusable presentational components (dumb components)
