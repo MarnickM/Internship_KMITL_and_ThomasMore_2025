@@ -24,7 +24,7 @@ export class DrawingComponent {
   private ctx!: CanvasRenderingContext2D;
   private drawing = false;
   public coordinates: { x: number; y: number }[] = [];
-  topic: Topic = { id: '', name: '', creator_email: 'senneke3112@gmail.com' };
+  topic: Topic = { id: '', name: '', creator_email: '' };
 
   selectedOption: string = '';
   dropdownOptions: string[] = []
