@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { LabelService } from './label-service.service';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { environment } from '../../../environments/environments';
 import { AuthService } from '../auth.service';
 
 import { firstValueFrom, of } from 'rxjs';
