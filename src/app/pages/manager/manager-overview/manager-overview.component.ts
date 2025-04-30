@@ -7,6 +7,8 @@ import { AuthService } from '../../../services/auth.service';
 import { LabelService } from '../../../services/labels/label-service.service';
 import { Router } from '@angular/router';
 import { AngularCsv } from 'angular-csv-ext/dist/Angular-csv';
+import { UserService } from '../../../services/users/user-service.service';
+import { User } from '../../../services/users/user';
 
 @Component({
   selector: 'app-manager-overview',
@@ -18,14 +20,15 @@ import { AngularCsv } from 'angular-csv-ext/dist/Angular-csv';
 export class ManagerOverviewComponent implements OnInit {
   topics: Topic[] = [];
   drawingsByTopic: { [key: string]: Drawing[] } = {};
-
+  userCache: { [id: string]: string } = {}; // Cache of user names by ID
 
   constructor(
     private topicService: TopicService,
     private drawingService: DrawingService,
     private authService: AuthService,
     private labelService: LabelService,
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
@@ -33,17 +36,46 @@ export class ManagerOverviewComponent implements OnInit {
       if (user?.email) {
         this.topicService.getTopicsByCreatorEmail(user.email).subscribe(topics => {
           this.topics = topics;
-  
+
           topics.forEach(topic => {
             this.drawingService.getDrawings().subscribe(drawings => {
-              this.drawingsByTopic[topic.id || ''] = drawings.filter(d => d.topic_id === topic.id);
+              const filtered = drawings.filter(d => d.topic_id === topic.id);
+              this.drawingsByTopic[topic.id || ''] = filtered;
+
+              // Preload writer names for this topic
+              filtered.forEach(drawing => {
+                this.loadWriterName(drawing.writer_id);
+              });
             });
           });
         });
       }
     });
   }
-  
+
+  loadWriterName(writerId: string) {
+    if (!this.userCache[writerId]) {
+      this.userService.getUser(writerId).subscribe(user => {
+        this.userCache[writerId] = user.name;
+      });
+    }
+  }
+
+  getWriterName(writerId: string): string {
+    return this.userCache[writerId] || 'Loading...';
+  }
+
+  getUnreviewedDrawings(topicId: string): Drawing[] {
+    return this.drawingsByTopic[topicId || '']?.filter(d => d.status === 'unreviewed') || [];
+  }
+
+  getRequestChangesDrawings(topicId: string): Drawing[] {
+    return this.drawingsByTopic[topicId || '']?.filter(d => d.status === 'request_changes') || [];
+  }
+
+  getReviewedDrawings(topicId: string): Drawing[] {
+    return this.drawingsByTopic[topicId || '']?.filter(d => d.status === 'reviewed') || [];
+  }
 
   deleteDrawing(id: string, topic_id: string) {
     this.drawingService.deleteDrawing(id).subscribe(() => {
@@ -54,7 +86,6 @@ export class ManagerOverviewComponent implements OnInit {
   }
 
   viewDrawing(drawing: Drawing, topic_name: string, topic_id: string) {
-    console.log("View drawing: ", drawing);
     this.labelService.getLabel(drawing.label_id).subscribe(label => {
       this.router.navigate(['/drawing'], {
         queryParams: {
@@ -70,21 +101,18 @@ export class ManagerOverviewComponent implements OnInit {
     });
   }
 
-
-  downloadCSV(topic: any) {
+  downloadCSV(topic: Topic) {
     const drawings = this.drawingsByTopic[topic.id || ''] || [];
     const filename = topic.name + "_overview"
     const drawingCount = drawings.length;
 
-    // Create an array of objects where each object represents a row in the CSV
     const csvData = drawings.map(drawing => ({
       "Drawing ID": drawing.id || 'N/A',
       "Description": drawing.description,
-      "Writer ID": drawing.writer_id,
+      "Writer Name": this.getWriterName(drawing.writer_id),
       "Vector Coordinates": drawing.vector.map(v => `(${v.x}, ${v.y})`).join('; ')
     }));
 
-    // Set CSV export options
     const options = {
       fieldSeparator: ',',
       quoteStrings: '"',
@@ -94,12 +122,11 @@ export class ManagerOverviewComponent implements OnInit {
       title: `Overview of ${topic.name}, Total drawings: ${drawingCount}`,
       useBom: true,
       noDownload: false,
-      headers: ["Drawing ID", "Description", "Writer ID", "Vector Coordinates"],
+      headers: ["Drawing ID", "Description", "Writer Name", "Vector Coordinates"],
       useHeader: false,
       nullToEmptyString: true,
     };
 
-    // Export to CSV
     new AngularCsv(csvData, filename, options);
   }
 }

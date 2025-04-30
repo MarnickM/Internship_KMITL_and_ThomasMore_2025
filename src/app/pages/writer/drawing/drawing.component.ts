@@ -37,54 +37,59 @@ export class DrawingComponent {
     topic_id: '',
     vector: [],
     description: '',
+    status: '',
     created_at: new Date()
   }
   updateDrawing: boolean = false;
   drawingID: string = '';
   label_id_pairs: { [key: string]: string } = {}
 
+  public userRole: string = '';
+  changeRequestComment: string = '';
 
-  constructor(private route: ActivatedRoute, private labelService: LabelService, private drawingService: DrawingService, private userService: UserService, private authService: AuthService) {
-    // Access the query parameters
+  constructor(
+    private route: ActivatedRoute,
+    private labelService: LabelService,
+    private drawingService: DrawingService,
+    private userService: UserService,
+    private authService: AuthService
+  ) {
     this.route.queryParams.subscribe(params => {
-
       if (params['name'] != undefined) {
-        // if we come from the topic overview page
         this.topic.id = params['id'];
         this.topic.name = params['name'];
-        console.log("We are coming from the topic overview page")
-      }
-      else {
+      } else {
         this.updateDrawing = true;
-        // if we come from the submissions overview page
         this.drawingID = params['id'];
         this.topic.id = params['topic_id'];
         this.description = params['description'];
         this.topic.name = params['topic'];
         this.selectedOption = params['label'];
         this.coordinates = JSON.parse(params['vector']);
-        console.log("We are coming from the submissions overview page")
       }
 
       if (this.topic.id !== '') {
         this.labelService.getLabelsByTopic(this.topic.id || '').subscribe(labels => {
-          console.log(labels);
-
           for (let label of labels) {
-            // Check if label.name is already in dropdownOptions
             if (!this.dropdownOptions.includes(label.name)) {
               this.dropdownOptions.push(label.name);
               this.label_id_pairs[label.name] = label.id ?? '';
-            } else {
-              console.log(`Label "${label.name}" already exists in dropdown options.`);
             }
           }
         });
       }
+
       if (this.selectedOption && this.dropdownOptions.includes(this.selectedOption)) {
         this.selectedOption = this.selectedOption;
       }
     });
+  }
+
+  ngOnInit() {
+    this.getUserRole();
+    if (this.updateDrawing) {
+      this.loadDrawing();
+    }
   }
 
   ngAfterViewInit() {
@@ -93,11 +98,9 @@ export class DrawingComponent {
     this.ctx.lineCap = 'round';
     this.ctx.strokeStyle = 'black';
 
-    // If there are stored coordinates, redraw them
     if (this.coordinates.length > 0) {
       this.drawStoredCoordinates();
     }
-
 
     this.canvas.nativeElement.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
     this.canvas.nativeElement.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
@@ -105,23 +108,19 @@ export class DrawingComponent {
     this.canvas.nativeElement.addEventListener('touchcancel', this.handleTouchEnd.bind(this));
   }
 
-
   private drawStoredCoordinates() {
     if (!this.coordinates.length) return;
-
     this.ctx.beginPath();
     let isDrawing = false;
 
     for (let i = 0; i < this.coordinates.length; i++) {
       const { x, y } = this.coordinates[i];
-
       if (x === -1000 && y === -1000) {
-        this.ctx.closePath();  // Stop the current path
+        this.ctx.closePath();
         isDrawing = false;
-        this.ctx.beginPath();  // Start a new path for the next stroke
+        this.ctx.beginPath();
         continue;
       }
-
       if (!isDrawing) {
         this.ctx.moveTo(x, y);
         isDrawing = true;
@@ -133,34 +132,25 @@ export class DrawingComponent {
     this.ctx.closePath();
   }
 
-
   startDrawing(event: MouseEvent) {
     this.drawing = true;
     const { x, y } = this.getMousePosition(event);
     this.coordinates.push({ x, y });
-    // console.log(x, y)
-
     this.ctx.beginPath();
     this.ctx.moveTo(x, y);
   }
 
   draw(event: MouseEvent) {
     if (!this.drawing) return;
-
     const { x, y } = this.getMousePosition(event);
     this.coordinates.push({ x, y });
-    // console.log(x, y)
-
     this.ctx.lineTo(x, y);
     this.ctx.stroke();
   }
 
   stopDrawing() {
     if (this.drawing) {
-      const x = -1000
-      const y = -1000
-      this.coordinates.push({ x, y });
-      // console.log(x, y)
+      this.coordinates.push({ x: -1000, y: -1000 });
       this.ctx.closePath();
     }
     this.drawing = false;
@@ -174,34 +164,49 @@ export class DrawingComponent {
     };
   }
 
-
   clearCanvas() {
     this.ctx.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
     this.coordinates = [];
   }
 
+  async getUserRole() {
+    const user = await firstValueFrom(
+      this.userService.getUserByEmail(this.authService.getUser().email).pipe(
+        filter(user => !!user),
+        take(1)
+      )
+    );
+    this.userRole = user.role_id || '';
+    console.log('User role: ', this.userRole);
+  }
+
   async loadUser() {
     const user = await firstValueFrom(
       this.userService.getUserByEmail(this.authService.getUser().email).pipe(
-        filter(user => !!user), // Wait for a valid user
-        take(1) // Take only the first result
+        filter(user => !!user),
+        take(1)
       )
     );
     this.drawingObject.writer_id = user.id || '';
     console.log('User found: ', user.id);
   }
 
-
+  async loadDrawing() {
+    const snapshot = await firstValueFrom(this.drawingService.getDrawing(this.drawingID));
+    this.drawingObject = snapshot;
+  }
 
   async submitDrawing() {
     this.drawingObject.label_id = this.label_id_pairs[this.selectedOption] || '';
     this.drawingObject.description = this.description;
+    this.drawingObject.status = 'unreviewed';
     this.drawingObject.vector = this.coordinates;
     this.drawingObject.topic_id = this.topic.id || '';
     this.drawingObject.created_at = new Date();
     if (this.drawingID !== '') {
       this.drawingObject.id = this.drawingID;
     }
+
     await this.loadUser();
 
     if (this.drawingObject.writer_id === '') {
@@ -214,16 +219,12 @@ export class DrawingComponent {
       return;
     }
 
-    console.log(this.drawingObject)
-
-    console.log(this.drawingObject)
     if (!this.updateDrawing) {
       this.drawingService.addDrawing(this.drawingObject).subscribe(id => {
         console.log('Drawing added with id: ', id);
         this.toggleSuccess();
       });
-    }
-    else {
+    } else {
       this.drawingService.updateDrawing(this.drawingObject).subscribe(() => {
         console.log('Drawing updated');
         this.toggleSuccess();
@@ -231,25 +232,37 @@ export class DrawingComponent {
     }
   }
 
+  updateStatus(newStatus: string) {
+    if (!this.drawingObject || !this.drawingObject.id) {
+      console.error('Drawing not loaded.');
+      return;
+    }
+
+    this.drawingObject.status = newStatus;
+
+    // If "request_changes" selected, attach the comment
+    if (newStatus === 'request_changes') {
+      this.drawingObject.changeRequestComment = this.changeRequestComment;
+    } else {
+      this.drawingObject.changeRequestComment = '';
+    }
+
+    this.drawingService.updateDrawing(this.drawingObject).subscribe(() => {
+      console.log('Status updated to:', newStatus);
+      this.toggleSuccess();
+    });
+  }
+
+
   toggleError() {
     this.error = !this.error;
-    setTimeout(() => {
-      this.error = false;
-    }, 3000); // Hide the error message after 3 seconds
+    setTimeout(() => this.error = false, 3000);
   }
+
   toggleSuccess() {
     this.success = !this.success;
-    setTimeout(() => {
-      this.success = false;
-    }, 3000); // Hide the success message after 3 seconds
+    setTimeout(() => this.success = false, 3000);
   }
-
-
-
-
-
-  // -------------------------------------------------------------
-
 
   private getTouchPosition(event: TouchEvent) {
     const rect = this.canvas.nativeElement.getBoundingClientRect();
@@ -285,5 +298,4 @@ export class DrawingComponent {
     }
     this.drawing = false;
   }
-
 }

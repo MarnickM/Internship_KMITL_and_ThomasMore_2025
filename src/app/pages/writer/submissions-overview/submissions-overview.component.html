@@ -3,6 +3,9 @@
 	<div class="flex flex-wrap justify-center">
 		@for(drawing of paginatedDrawings ;track $index) {
             <div class="flex m-3 shadow-lg border border-black rounded-md overflow-hidden">
+                @if(drawing.status == 'request_changes') {
+                    <p class="bg-orange-300 text-center px-3 flex justify-center items-center text-xl font-bold">!</p>
+                }
                 <div class="h-20 w-72 bg-gray-100 rounded-l-md border border-1 border-gray-200 p-1">
                     <div>
                         <p>{{ drawing.topic_id }}</p>
