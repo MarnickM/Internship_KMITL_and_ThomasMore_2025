@@ -157,3 +157,11 @@ public/
 
 ---
 🎨 **Built with Angular & Firebase** | 🔌 **Custom Google Auth**
+
+---
+
+## Contributors 👥
+
+    Sen Dewael
+
+    Marnick Michielsen
