@@ -13,8 +13,8 @@ describe('TopicOverviewComponent', () => {
   let mockRouter: jasmine.SpyObj<Router>;
 
   const mockTopics: Topic[] = [
-    { id: 'topic1', name: 'Test Topic 1', creator_email: 'creator1@example.com' },
-    { id: 'topic2', name: 'Test Topic 2', creator_email: 'creator2@example.com' }
+    { id: 'topic1', name: 'Test Topic 1', creator_email: 'creator1@example.com', access_user_emails: ['example@example.com'] },
+    { id: 'topic2', name: 'Test Topic 2', creator_email: 'creator2@example.com', access_user_emails: ['example@example.com'] }
   ];
 
   beforeEach(async () => {
@@ -68,7 +68,7 @@ describe('TopicOverviewComponent', () => {
 
     const compiled = fixture.nativeElement;
     const topicElements = compiled.querySelectorAll('.topic-item');
-    
+
     expect(topicElements.length).toBe(mockTopics.length);
     expect(topicElements[0].textContent).toContain(mockTopics[0].name);
     expect(topicElements[1].textContent).toContain(mockTopics[1].name);
