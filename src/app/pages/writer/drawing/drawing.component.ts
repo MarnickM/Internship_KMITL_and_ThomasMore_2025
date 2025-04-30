@@ -24,7 +24,7 @@ export class DrawingComponent {
   private ctx!: CanvasRenderingContext2D;
   private drawing = false;
   public coordinates: { x: number; y: number }[] = [];
-  topic: Topic = { id: '', name: '', creator_email: '' };
+  topic: Topic = { id: '', name: '', creator_email: '', access_user_emails: [] };
 
   selectedOption: string = '';
   dropdownOptions: string[] = []
@@ -69,7 +69,7 @@ export class DrawingComponent {
       if (this.topic.id !== '') {
         this.labelService.getLabelsByTopic(this.topic.id || '').subscribe(labels => {
           console.log(labels);
-          
+
           for (let label of labels) {
             // Check if label.name is already in dropdownOptions
             if (!this.dropdownOptions.includes(label.name)) {
@@ -92,7 +92,7 @@ export class DrawingComponent {
     this.ctx.lineWidth = 2;
     this.ctx.lineCap = 'round';
     this.ctx.strokeStyle = 'black';
-  
+
     // If there are stored coordinates, redraw them
     if (this.coordinates.length > 0) {
       this.drawStoredCoordinates();
@@ -104,24 +104,24 @@ export class DrawingComponent {
     this.canvas.nativeElement.addEventListener('touchend', this.handleTouchEnd.bind(this));
     this.canvas.nativeElement.addEventListener('touchcancel', this.handleTouchEnd.bind(this));
   }
-  
+
 
   private drawStoredCoordinates() {
     if (!this.coordinates.length) return;
-  
+
     this.ctx.beginPath();
     let isDrawing = false;
-  
+
     for (let i = 0; i < this.coordinates.length; i++) {
       const { x, y } = this.coordinates[i];
-  
+
       if (x === -1000 && y === -1000) {
         this.ctx.closePath();  // Stop the current path
         isDrawing = false;
         this.ctx.beginPath();  // Start a new path for the next stroke
         continue;
       }
-  
+
       if (!isDrawing) {
         this.ctx.moveTo(x, y);
         isDrawing = true;
@@ -132,7 +132,7 @@ export class DrawingComponent {
     }
     this.ctx.closePath();
   }
-  
+
 
   startDrawing(event: MouseEvent) {
     this.drawing = true;
@@ -203,7 +203,7 @@ export class DrawingComponent {
       this.drawingObject.id = this.drawingID;
     }
     await this.loadUser();
-      
+
     if (this.drawingObject.writer_id === '') {
       console.error('User not found');
       return;
@@ -259,7 +259,7 @@ export class DrawingComponent {
       y: (touch.clientY - rect.top) * (this.canvas.nativeElement.height / rect.height)
     };
   }
-  
+
   handleTouchStart(event: TouchEvent) {
     event.preventDefault();
     const pos = this.getTouchPosition(event);
@@ -268,7 +268,7 @@ export class DrawingComponent {
     this.ctx.beginPath();
     this.ctx.moveTo(pos.x, pos.y);
   }
-  
+
   handleTouchMove(event: TouchEvent) {
     if (!this.drawing) return;
     event.preventDefault();
@@ -277,7 +277,7 @@ export class DrawingComponent {
     this.ctx.lineTo(pos.x, pos.y);
     this.ctx.stroke();
   }
-  
+
   handleTouchEnd(event: TouchEvent) {
     if (this.drawing) {
       this.coordinates.push({ x: -1000, y: -1000 });
@@ -285,5 +285,5 @@ export class DrawingComponent {
     }
     this.drawing = false;
   }
-  
+
 }
