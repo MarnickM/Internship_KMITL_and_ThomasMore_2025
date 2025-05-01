@@ -15,6 +15,7 @@ import { ManagerOverviewComponent } from './pages/manager/manager-overview/manag
 import { RoleReviewComponent } from './pages/role-review/role-review.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { SketchGeneratorComponent } from './experiments/sketch-generator/sketch-generator.component';
+import { TopicDetailComponent } from './pages/manager/topic-detail/topic-detail.component';
 // import { AutoSketchComponent } from './autosketch/autosketch.component';
 
 export const routes: Routes = [
@@ -30,9 +31,10 @@ export const routes: Routes = [
     { path: 'topic-management', component: TopicManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id, environment.admin_role_id] } },
     { path: 'writer-management', component: WriterManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id, environment.admin_role_id] } },
     { path: 'manager-overview', component: ManagerOverviewComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id, environment.admin_role_id] } },
+    { path: 'topic-detail/:id', component: TopicDetailComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.manager_role_id, environment.admin_role_id] } },
     // Admin
     { path: 'manager-management', component: ManagerManagementComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: [environment.admin_role_id] } },
-    { path:'sketch-generator', component: SketchGeneratorComponent },
+    { path: 'sketch-generator', component: SketchGeneratorComponent },
     // { path:'auto-sketch', component: AutoSketchComponent },
     // Error pages
     { path: 'access-denied', component: AccessDeniedComponent },

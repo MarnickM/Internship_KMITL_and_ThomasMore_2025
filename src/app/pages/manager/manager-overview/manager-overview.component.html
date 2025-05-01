@@ -1,9 +1,107 @@
-<div class="container m-auto bg-white p-4">
-    <!-- Topics List -->
-    @for(topic of topics; track $index) {
+<div class="min-h-screen md:h-screen w-full lg:w-[calc(100vw-256px)] font-montserrat p-5">
+  @if(addTopic) {
+    <div class="absolute left-0 top-0 min-h-screen md:h-screen w-full lg:w-[calc(100vw-256px)] bg-white z-50 p-5">
+      <p class="text-2xl mb-5 leading-none">ADD NEW TOPIC</p>
+      <div class="flex flex-col gap-4">
+        <input [(ngModel)]="topicForm.name"
+        placeholder="Topic name"
+        class="p-2 rounded border h-10 w-full md:w-64">
+        <input [(ngModel)]="topicForm.ui_image"
+        placeholder="Topic image URL"
+        class="p-2 rounded border h-10 w-full md:w-64">
+        <div class="">
+          <div class="flex gap-2 mb-2">
+            <input [(ngModel)]="newLabelInput"
+                  placeholder="Enter label name"
+                  class="p-2 rounded border h-10 w-full md:w-96">
+            <button (click)="addLabelToTempList()"
+                  class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-40 h-10">
+                Add Label
+            </button>
+          </div>
+          <ul class="md:w-96">
+            @for(label of tempLabels; track label.name) {
+              <li class="flex justify-between items-center p-2 bg-gray-100 rounded-md">
+                <span>{{label.name}}</span>
+                <button (click)="removeLabelFromTempList($index)"
+                      class="text-red-500 hover:text-red-700">
+                    Remove
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+        <div class="">
+          <div class="flex gap-2 mb-2">
+            <select [(ngModel)]="selectedEmail" class="p-2 rounded border h-10 w-full md:w-96">
+              <option value="" disabled selected>Select user email</option>
+              @for(user of users; track user.id) {
+                <option [value]="user.email">{{user.email}}</option>
+              }
+            </select>
+            <button (click)="addAccessEmail()"
+                  class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-40 h-10">
+                Add Access
+            </button>
+          </div>
+          <ul class="w-96">
+            @for(email of topicForm.access_user_emails; track email) {
+              <li class="flex justify-between items-center p-2 bg-gray-100 rounded-md">
+                <span>{{email}}</span>
+                <button (click)="removeAccessEmail(email)"
+                      class="text-red-500 hover:text-red-700">
+                    Remove
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+      <div class="flex gap-5 mt-4">
+        <button (click)="cancelAddTopic()" class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-32 h-10">CANCEL</button>
+        <button (click)="addTopicToDb()" class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-32 h-10">ADD TOPIC</button>
+      </div>
+    </div>
+  }
+	<h1 class="text-2xl mb-5 leading-none">TOPIC OVERVIEW</h1>
+  <div class="flex flex-col md:flex-row gap-5 justify-between items-center mb-5 w-full h-10">
+    <div class="flex gap-5">
+      <input
+      type="text"
+      [(ngModel)]="searchText"
+      placeholder="Search topics..."
+      class="p-2 rounded border h-10 w-full md:w-64"
+    />
+      <select [(ngModel)]="sortOption" class="p-2 rounded border h-10 w-full md:w-64">
+        <option value="alphabetical">Alphabetical</option>
+        <option value="total">Total Drawings</option>
+        <option value="unreviewed">Unreviewed Drawings</option>
+      </select>
+    </div>
+    <button (click)="addTopicFunction()" class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-40 h-10">Add new topic</button>
+  </div>
+  <div class="flex gap-5 text-white">
+    @for (topic of filteredTopics(); track $index) {
+      <div (click)="navigateToTopicOverview(topic.id ?? '')" class="cursor-pointer overflow-hidden w-64 h-64 shadow-md bg-gray-700 rounded-md flex justify-center items-center group relative">
+        <div class="absolute top-0 left-0 w-full h-full text-white flex justify-center items-center bg-black rounded-md opacity-0 group-hover:opacity-80 transition-opacity duration-300 z-30">
+          <p>Overview</p>
+        </div>
+        <div class="absolute top-0 left-0 w-full h-full rounded-md group-hover:scale-125 transition-all duration-1000 overflow-hidden">
+          <img [src]="topic.ui_image" alt="" class="object-cover w-full h-full rounded-md brightness-75">
+        </div>
+        <div class="flex flex-col text-center">
+          <p class="group-hover:opacity-0 transition-opacity duration-300 z-20">{{ topic.name }}</p>
+          <p class="text-xs mt-1 z-20">Drawings: {{ getDrawingCount(topic.id ?? '') }}</p>
+          <p class="text-xs z-20">Unreviewed: {{ getUnreviewedDrawingCount(topic.id ?? '') }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</div> 
+	<!-- @for(topic of topics; track $index) {
         <div class="mb-6">
             <div class="flex justify-between">
-                <h3 class="text-left text-2xl font-semibold text-black">
+                <h3 class="text-xl mb-5 leading-none">
                     {{ topic.name }} - {{ (drawingsByTopic[topic.id || ''] && drawingsByTopic[topic.id || ''].length) || 0 }} drawing(s)
                   </h3>
                               
@@ -84,5 +182,5 @@
                 }
             </div>
         </div>
-    }
-</div>
+    } -->
+
