@@ -2,13 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
-import { ButtonComponent } from '../button/button.component';
 import { UserService } from '../../services/users/user-service.service';  // Import UserService
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.css']
 })
@@ -63,7 +62,7 @@ export class NavigationComponent implements OnInit {
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
-  }  
+  }
 
   toggleProfileMenu() {
     this.profileMenuOpen = !this.profileMenuOpen;

@@ -1,0 +1,184 @@
+<div class="min-h-screen md:h-screen w-full lg:w-[calc(100vw-256px)] font-montserrat p-5">
+    @if(loading) {
+      <p>Loading...</p>
+    } @else if (topic) {
+      <div class="">
+        <div class="flex justify-between">
+          <div class="flex gap-5">
+            <img [src]="topic.ui_image" alt="Topic image" class="w-32 h-32 object-cover rounded-md">
+            <div>
+              <h1 class="text-2xl leading-none">{{ topic.name }}</h1>
+              <p class="text-gray-600 mt-2">Total drawings: {{ drawings.length }}</p>
+              <p class="text-gray-600">Unreviewed: {{ getUnreviewedDrawings().length }}</p>
+            </div>
+          </div>
+          <div>
+            <div class="flex gap-2">
+              <button (click)="toggleEditMode()" class="px-4 py-2 bg-blue-500 text-white rounded-md">
+                {{ editMode ? 'Cancel' : 'Edit' }}
+              </button>
+              <button (click)="deleteTopic()" class="px-4 py-2 bg-red-500 text-white rounded-md">
+                Delete
+              </button>
+              <button (click)="downloadCSV()" class="px-4 py-2 bg-green-500 text-white rounded-md">
+                Export CSV
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Header with edit button -->
+        <div class="flex justify-between items-center mb-4">
+          <div class="flex items-center gap-4">
+            
+          </div>
+          
+        </div>
+  
+        <!-- Edit Form (shown when editMode is true) -->
+        @if(editMode) {
+          <div class="bg-gray-100 p-4 rounded-lg mb-6">
+            <h2 class="text-xl font-semibold mb-4">Edit Topic</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Name and Image -->
+              <div>
+                <div class="mb-4">
+                  <label class="block text-sm font-medium mb-1">Topic Name</label>
+                  <input [(ngModel)]="editForm.name" class="w-full p-2 border rounded">
+                </div>
+                <div class="mb-4">
+                  <label class="block text-sm font-medium mb-1">Image URL</label>
+                  <input [(ngModel)]="editForm.ui_image" class="w-full p-2 border rounded">
+                </div>
+              </div>
+  
+              <!-- Preview -->
+              <div>
+                <label class="block text-sm font-medium mb-1">Preview</label>
+                <div class="border rounded p-2">
+                  <img [src]="editForm.ui_image || 'https://via.placeholder.com/150'" 
+                       alt="Preview" 
+                       class="w-full h-32 object-cover rounded">
+                  <p class="mt-2 text-center">{{ editForm.name || 'Topic name' }}</p>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Labels Management -->
+            <div class="mt-4">
+              <h3 class="font-medium mb-2">Labels</h3>
+              <div class="flex gap-2 mb-2">
+                <input [(ngModel)]="newLabelName" 
+                      placeholder="New label name" 
+                      class="flex-1 p-2 border rounded">
+                <button (click)="addLabel()" class="px-4 py-2 bg-green-500 text-white rounded-md">
+                  Add Label
+                </button>
+              </div>
+              <ul class="border rounded divide-y">
+                @for(label of labels; track label.id) {
+                  <li class="flex justify-between items-center p-2">
+                    <span>{{ label.name }}</span>
+                    <button (click)="removeLabel(label.id)" 
+                            class="text-red-500 hover:text-red-700">
+                      Remove
+                    </button>
+                  </li>
+                }
+              </ul>
+            </div>
+  
+            <!-- Access Management -->
+            <div class="mt-4">
+              <h3 class="font-medium mb-2">Access Users</h3>
+              <div class="flex gap-2 mb-2">
+                <select [(ngModel)]="selectedUserEmail" class="flex-1 p-2 border rounded">
+                  <option value="" disabled selected>Select user</option>
+                  @for(user of allUsers; track user.id) {
+                    <option [value]="user.email">{{ user.email }}</option>
+                  }
+                </select>
+                <button (click)="addAccessUser()" class="px-4 py-2 bg-green-500 text-white rounded-md">
+                  Add User
+                </button>
+              </div>
+              <ul class="border rounded divide-y">
+                @for(email of editForm.access_user_emails; track email) {
+                  <li class="flex justify-between items-center p-2">
+                    <span>{{ email }}</span>
+                    <button (click)="removeAccessUser(email)" 
+                            class="text-red-500 hover:text-red-700">
+                      Remove
+                    </button>
+                  </li>
+                }
+              </ul>
+            </div>
+  
+            <!-- Save Button -->
+            <div class="mt-4 flex justify-end">
+              <button (click)="saveChanges()" 
+                      class="px-4 py-2 bg-blue-500 text-white rounded-md">
+                Save Changes
+              </button>
+            </div>
+          </div>
+        }
+        <div class="flex flex-col md:flex-row gap-5 items-center justify-between mb-5 w-full mt-6">
+          <input [(ngModel)]="filters.description" 
+                 placeholder="Search description..." 
+                 class="p-2 rounded border h-10 w-full md:w-80" />
+          
+          <div class="flex flex-col md:flex-row items-center gap-5 md:h-10 w-full md:w-auto">
+            <select [(ngModel)]="filters.writer" class="p-2 rounded border h-full w-full md:w-44">
+              <option value="">All Writers</option>
+              @for(user of writersWithDrawings; track user.id) {
+                <option [value]="user.id">{{ user.name || user.email }}</option>
+              }
+            </select>
+            
+            <select [(ngModel)]="filters.status" class="p-2 rounded border h-full w-full md:w-44">
+              <option value="">All Statuses</option>
+              <option value="unreviewed">Unreviewed</option>
+              <option value="request_changes">Action Required</option>
+              <option value="reviewed">Reviewed</option>
+            </select>
+            
+            <select [(ngModel)]="filters.sortOrder" class="p-2 rounded border h-full w-full md:w-44">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex flex-wrap md:flex-nowrap gap-5 w-full justify-center md:justify-normal">
+          @for (drawing of filteredDrawings; track drawing.id) {
+            <div (click)="viewDrawing(drawing)" class="md:mt-0 w-full md:max-w-80 h-36 text-white p-5 bg-gray-600 rounded-md relative group cursor-pointer">
+              <div class="absolute top-0 left-0 w-full h-full text-white flex justify-center items-center bg-black rounded-md opacity-0 group-hover:opacity-80 transition-opacity duration-300">
+                <p>View</p>
+              </div>
+              <div class="flex flex-col justify-between h-full">
+                <p class="text-sm text-right">
+                  @if(drawing.status == 'request_changes') {
+                    <span class="animate-pulse text-orange-500">Action required</span>
+                  }@else if (drawing.status == 'unreviewed') {
+                    <span>Unreviewed</span>
+                  }@else {
+                    <span class="text-green-500">Reviewed</span>
+                  }
+                </p>
+                <div class="mt-auto">
+                  <p class="text-sm">{{ getWriterName(drawing.writer_id) }}</p>
+                  <p class="text-xs">{{ drawing.description }}</p>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <p>No drawings found for this topic.</p>
+          }
+        </div>
+      </div>
+    } @else {
+      <p>Topic not found</p>
+    }
+  </div>

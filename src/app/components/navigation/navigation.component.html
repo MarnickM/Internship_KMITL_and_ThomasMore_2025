@@ -1,55 +1,95 @@
 <div class="relative">
-	<!-- Hamburger Button -->
-	<button (click)="toggleMenu()" class="md:hidden fixed top-4 right-4 z-50 bg-black text-white p-2 rounded-md">
-		☰
-	  </button>
-	  
-  
-	<!-- Sidebar Navigation -->
-	<div [ngClass]="{'hidden': !menuOpen, 'block': menuOpen, 'md:block': true}" class="fixed inset-y-0 right-0 bg-white shadow-md w-64 h-full z-40 p-4 transition-transform transform md:translate-x-0" [class.translate-x-full]="!menuOpen">
-	  <div class="flex flex-col justify-between h-full">
-		<div>
-		  <div class="text-center mb-12 mt-7">
-			<h2 class="font-stalemate text-4xl">Hand Drawing App</h2>
-		  </div>
-		  <div>
-			<ng-container *ngIf="userRole == 'UEjEnMYFPoKvwMOauVnY'">
-			  <button (click)="navigateToManagerOverview()" class="nav-btn">Topic Overview</button>
-			  <button (click)="navigateToTopicManagement()" class="nav-btn">Topic Management</button>
-			  <button (click)="navigateToWriterManagement()" class="nav-btn">Writer Management</button>
-			</ng-container>
-			
-			<ng-container *ngIf="userRole == 'rnBKQzZVTlsqyOqufFq5'">
-			  <button (click)="navigateToManagerManagement()" class="nav-btn">Manager Management</button>
-			</ng-container>
-			
-			<ng-container *ngIf="userRole == 'dfaNnrXgH6bqFys0Sw44'">
-			  <button (click)="navigateToTopicOverview()" class="nav-btn">Back to menu</button>
-			  <button (click)="navigateToMyDrawings()" class="nav-btn">My Drawings</button>
-			</ng-container>
-		  </div>
+	<button (click)="toggleMenu()"
+		class="lg:hidden fixed top-5 right-5 z-50 w-5 h-5">
+		<span [class.rotate-45]="menuOpen"
+			[class.-translate-y-2]="!menuOpen"
+			class="absolute top-1/2 left-0 w-5 h-[1.5px] bg-black transform transition duration-300 ease-in-out origin-center"></span>
+		<span [class.opacity-0]="menuOpen"
+			[class.translate-y-0]="!menuOpen"
+			class="absolute top-1/2 left-0 w-5 h-[1.5px] bg-black transition duration-300 ease-in-out origin-center"></span>
+		<span [class.-rotate-45]="menuOpen"
+			[class.translate-y-2]="!menuOpen"
+			class="absolute top-1/2 left-0 w-5 h-[1.5px] bg-black transform transition duration-300 ease-in-out origin-center"></span>
+	</button>
+	<div [ngClass]="{'hidden': !menuOpen, 'block': menuOpen, 'lg:block': true}"
+		[class.translate-x-full]="!menuOpen"
+		class="fixed inset-y-0 right-0 bg-white shadow-md w-full md:w-64 h-full z-40 p-4 transition-transform transform md:translate-x-0 font-montserrat text-sm">
+		<div class="flex flex-col justify-between h-full">
+			<div>
+				<div class="text-center mb-12 mt-7">
+					<h2 class="font-stalemate text-4xl">Hand Drawing App</h2>
+				</div>
+				<div>
+					<ng-container *ngIf="userRole == 'UEjEnMYFPoKvwMOauVnY'">
+						<button (click)="navigateToManagerOverview()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10">
+							TOPIC OVERVIEW
+						</button>
+						<!-- <button (click)="navigateToTopicManagement()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10 mt-2">
+							Topic Management
+						</button> -->
+						<button (click)="navigateToWriterManagement()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10 mt-2">
+							WRITER MANAGEMENT
+						</button>
+					</ng-container>
+					<ng-container *ngIf="userRole == 'rnBKQzZVTlsqyOqufFq5'">
+						<button (click)="navigateToManagerManagement()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10">
+							Manager Management
+						</button>
+					</ng-container>
+					<ng-container *ngIf="userRole == 'dfaNnrXgH6bqFys0Sw44'">
+						<button (click)="navigateToTopicOverview()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10">
+							OVERVIEW
+						</button>
+						<button (click)="navigateToMyDrawings()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10 mt-2">
+							MY DRAWINGS
+						</button>
+					</ng-container>
+				</div>
+			</div>
+			<div class="w-full text-center">
+				<div class="flex justify-center items-center mb-2">
+					<p class="text-sm no-b">
+						Logged in as
+						<span class="font-bold">{{ user.name }}</span>
+					</p>
+					<button (click)="toggleProfileMenu()">
+						<img *ngIf="user?.picture"
+							[src]="user.picture"
+							alt="Profile"
+							class="profile-img">
+						<img *ngIf="!user?.picture"
+							src="https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg"
+							alt="Profile"
+							class="profile-img">
+					</button>
+				</div>
+				<button (click)="logout()"
+					class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10">
+					LOGOUT
+				</button>
+			</div>
 		</div>
-		<div class="w-full text-center">
-		  <div class="flex justify-center items-center mb-2">
-			<p class="text-sm no-b">Logged in as <span class="font-bold">{{ user.name }}</span></p>
-			<button (click)="toggleProfileMenu()">
-			  <img *ngIf="user?.picture" [src]="user.picture" alt="Profile" class="profile-img">
-			  <img *ngIf="!user?.picture" src="https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg" alt="Profile" class="profile-img">
-			</button>
-		  </div>
-		  <button (click)="logout()" class="nav-btn w-1/2">Logout</button>
-		</div>
-	  </div>
 	</div>
-  </div>
-  
-  <!-- Profile Menu Modal -->
-  <div *ngIf="profileMenuOpen" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+</div>
+<!-- Profile Menu Modal -->
+<div *ngIf="profileMenuOpen"
+	class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
 	<div class="bg-gray-100 w-72 p-5 rounded-lg shadow-lg relative flex flex-col items-center">
-	  <img *ngIf="user?.picture" [src]="user.picture" alt="Profile" class="w-20 h-20 rounded-full border border-gray-300 -mt-12 bg-white p-1 shadow-md">
-	  <h3 class="text-lg font-semibold mt-3">{{ user.name }}</h3>
-	  <p class="text-gray-600 text-sm">{{ user.email }}</p>
-	  <button (click)="profileMenuOpen = false" class="nav-btn w-full">Close</button>
+		<img *ngIf="user?.picture"
+			[src]="user.picture"
+			alt="Profile"
+			class="w-20 h-20 rounded-full border border-gray-300 -mt-12 bg-white p-1 shadow-md">
+		<h3 class="text-lg font-semibold mt-3">{{ user.name }}</h3>
+		<p class="text-gray-600 text-sm">{{ user.email }}</p>
+		<button (click)="profileMenuOpen = false"
+			class="nav-btn w-full">
+			Close
+		</button>
 	</div>
-  </div>
-  
+</div>

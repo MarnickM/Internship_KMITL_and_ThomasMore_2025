@@ -1,13 +1,59 @@
-<div class="m-4 text-center">
-	<h2 class="text-2xl">Select a topic</h2>
-	@for (topic of topics; track $index) {
-		<div class="my-4 flex flex-col">
-			<app-button buttonText="{{topic.name}}"
-				(click)="navigateToDrawing(topic)"
-				height="60px"
-				width="300px"
-				class="mb-2">
-			</app-button>
+<div class="min-h-screen md:h-screen w-full lg:w-[calc(100vw-256px)] font-montserrat">
+	<div class="w-full h-3/5 p-5 flex flex-col md:flex-row gap-5 justify-center items-center text-white">
+		@for (topic of topics; track $index) {
+			<div (click)="navigateToDrawing(topic)" class="cursor-pointer overflow-hidden w-64 h-64 shadow-md bg-gray-700 rounded-md flex justify-center items-center group relative">
+				<div class="absolute top-0 left-0 w-full h-full text-white flex justify-center items-center bg-black rounded-md opacity-0 group-hover:opacity-80 transition-opacity duration-300 z-30">
+					<p>Create drawing</p>
+				</div>
+				<div class="absolute top-0 left-0 w-full h-full rounded-md group-hover:scale-125 transition-all duration-1000 overflow-hidden">
+					<img [src]="topic.ui_image" alt="" class="object-cover w-full h-full rounded-md brightness-75">
+				</div>
+				<p class="group-hover:opacity-0 transition-opacity duration-300 z-20">{{ topic.name }}</p>
+			</div>
+		}
+		@if((topics ?? []).length == 1) {
+			<div class="w-64 h-64 shadow-md bg-gray-100 rounded-md flex justify-center items-center p-2">
+				<p class="text-center text-black cursor-default">Managers can give you access to more topics.</p>
+			</div>
+		}
+		@if((topics ?? []).length < 1) {
+			<p class="text-center text-black cursor-default">You have not been given access to any topic. <br />Managers can give you access.</p>
+		}
+	</div>
+	<div class="w-full h-auto md:h-2/5 bg-gray-100 shadow-top flex flex-col p-5">
+		<div class="flex justify-between">
+		  <p class="text-2xl">RECENT DRAWINGS</p>
+		  <p class="text-sm cursor-pointer text-right md:text-left" (click)="navigateToMyDrawings()">
+			MY DRAWINGS <i class="fa-solid fa-chevron-right"></i>
+		  </p>
 		</div>
-	}
+		<div class="flex flex-col md:flex-row gap-5 justify-center items-center w-full flex-1">
+			@if((drawings ?? []).length == 0) {
+				<p class="text-center text-black">You can create a drawing by selecting a topic.</p>
+			}
+			@for (drawing of drawings?.slice(0, 3); track $index) {
+
+			<div (click)="viewDrawing(drawing)" class="mt-5 md:mt-0 w-64 md:w-80 h-36 text-white p-5 bg-gray-600 rounded-md relative group cursor-pointer">
+				<div class="absolute top-0 left-0 w-full h-full text-white flex justify-center items-center bg-black rounded-md opacity-0 group-hover:opacity-80 transition-opacity duration-300">
+					<p>View</p>
+				</div>
+				<div class="flex flex-col justify-between h-full">
+					<p class="text-sm text-right">
+						@if(drawing.status == 'request_changes') {
+							<span class="animate-pulse text-orange-500">Action required</span>
+						}@else if (drawing.status == 'unreviewed') {
+							<span>Unreviewed</span>
+						}@else {
+							<span class="text-green-500">Reviewed</span>
+						}
+					</p>
+					<div class="mt-auto">
+						<p>{{ topicIdToName[drawing.topic_id] || 'Unknown Topic' }}</p>
+						<p class="text-sm">{{ drawing.description }}</p>
+					</div>
+				</div>
+			</div>
+			}
+		</div>
+	</div>
 </div>

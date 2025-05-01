@@ -3,4 +3,5 @@ export interface Topic {
     name: string;
     creator_email: string;
     access_user_emails: string[];
+    ui_image: string;
 }

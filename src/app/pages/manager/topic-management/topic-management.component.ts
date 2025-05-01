@@ -138,7 +138,8 @@ export class TopicManagementComponent implements OnInit {
       const newTopic: Topic = {
         name: this.topicName,
         creator_email: this.currentUserEmail,
-        access_user_emails: []
+        access_user_emails: [],
+        ui_image: "https://images.pexels.com/photos/1526/dark-blur-blurred-gradient.jpg"
       };
       this.topicService.addTopic(newTopic).subscribe((topicId) => {
         newTopic.id = topicId;

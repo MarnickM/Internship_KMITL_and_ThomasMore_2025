@@ -6,21 +6,37 @@ import { DrawingService } from '../../../services/drawings/drawing-service.servi
 import { AuthService } from '../../../services/auth.service';
 import { LabelService } from '../../../services/labels/label-service.service';
 import { Router } from '@angular/router';
-import { AngularCsv } from 'angular-csv-ext/dist/Angular-csv';
 import { UserService } from '../../../services/users/user-service.service';
 import { User } from '../../../services/users/user';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-manager-overview',
   standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './manager-overview.component.html',
-  styleUrl: './manager-overview.component.css'
+  styleUrls: ['./manager-overview.component.css']
 })
 export class ManagerOverviewComponent implements OnInit {
   topics: Topic[] = [];
+  searchText: string = '';
   drawingsByTopic: { [key: string]: Drawing[] } = {};
-  userCache: { [id: string]: string } = {}; // Cache of user names by ID
+  sortOption: string = 'alphabetical';
+  addTopic: boolean = false;
+  users: User[] = [];
+  selectedEmail: string = '';
+  userEmail: string = '';
+
+  // Label management properties
+  tempLabels: { name: string }[] = []; // Temporary storage for labels before topic is created
+  newLabelInput: string = '';
+
+  topicForm = {
+    name: '',
+    ui_image: '',
+    creator_email: '',
+    access_user_emails: [] as string[]
+  };
 
   constructor(
     private topicService: TopicService,
@@ -34,99 +50,143 @@ export class ManagerOverviewComponent implements OnInit {
   ngOnInit() {
     this.authService.user$.subscribe(user => {
       if (user?.email) {
-        this.topicService.getTopicsByCreatorEmail(user.email).subscribe(topics => {
-          this.topics = topics;
-
-          topics.forEach(topic => {
-            this.drawingService.getDrawings().subscribe(drawings => {
-              const filtered = drawings.filter(d => d.topic_id === topic.id);
-              this.drawingsByTopic[topic.id || ''] = filtered;
-
-              // Preload writer names for this topic
-              filtered.forEach(drawing => {
-                this.loadWriterName(drawing.writer_id);
-              });
-            });
-          });
-        });
+        this.userEmail = user.email;
+        this.loadTopics(user.email);
       }
+    });
+
+    this.userService.getUsers().subscribe(users => {
+      this.users = users;
     });
   }
 
-  loadWriterName(writerId: string) {
-    if (!this.userCache[writerId]) {
-      this.userService.getUser(writerId).subscribe(user => {
-        this.userCache[writerId] = user.name;
+  private loadTopics(email: string) {
+    this.topicService.getTopicsByCreatorEmail(email).subscribe(topics => {
+      this.topics = topics;
+      topics.forEach(topic => {
+        this.drawingService.getDrawings().subscribe(drawings => {
+          const filtered = drawings.filter(d => d.topic_id === topic.id);
+          this.drawingsByTopic[topic.id || ''] = filtered;
+        });
+      });
+    });
+  }
+
+  // Label management methods
+  addLabelToTempList() {
+    if (!this.newLabelInput.trim()) return;
+
+    this.tempLabels.push({ name: this.newLabelInput.trim() });
+    this.newLabelInput = '';
+  }
+
+  removeLabelFromTempList(index: number) {
+    this.tempLabels.splice(index, 1);
+  }
+
+  saveLabelsForTopic(topicId: string) {
+    this.tempLabels.forEach(label => {
+      const newLabel = {
+        topic_id: topicId,
+        name: label.name
+      };
+
+      this.labelService.addLabel(newLabel).subscribe();
+    });
+
+    // Clear temporary labels after saving
+    this.tempLabels = [];
+  }
+
+  // Access email management methods
+  addAccessEmail() {
+    if (this.selectedEmail && !this.topicForm.access_user_emails.includes(this.selectedEmail)) {
+      this.topicForm.access_user_emails.push(this.selectedEmail);
+      this.selectedEmail = '';
+    }
+  }
+
+  removeAccessEmail(email: string) {
+    this.topicForm.access_user_emails = this.topicForm.access_user_emails.filter(e => e !== email);
+  }
+
+  // Topic management methods
+  addTopicFunction(): void {
+    this.addTopic = true;
+    this.resetForm();
+  }
+
+  cancelAddTopic(): void {
+    this.addTopic = false;
+    this.resetForm();
+  }
+
+  private resetForm() {
+    this.topicForm = {
+      name: '',
+      ui_image: '',
+      creator_email: '',
+      access_user_emails: []
+    };
+    this.tempLabels = [];
+    this.newLabelInput = '';
+    this.selectedEmail = '';
+  }
+
+  addTopicToDb() {
+    if (this.topicForm.name.trim() && this.userEmail) {
+      const newTopic: Topic = {
+        name: this.topicForm.name,
+        creator_email: this.userEmail,
+        access_user_emails: this.topicForm.access_user_emails,
+        ui_image: this.topicForm.ui_image.trim() ? this.topicForm.ui_image : 'https://images.pexels.com/photos/1526/dark-blur-blurred-gradient.jpg'
+      };
+
+      this.topicService.addTopic(newTopic).subscribe((topicId) => {
+        newTopic.id = topicId;
+        this.topics.push(newTopic);
+
+        // Save labels after topic is created
+        if (this.tempLabels.length > 0) {
+          this.saveLabelsForTopic(topicId);
+        }
+
+        this.resetForm();
+        this.addTopic = false;
       });
     }
   }
 
-  getWriterName(writerId: string): string {
-    return this.userCache[writerId] || 'Loading...';
+  // Filter and sorting methods
+  filteredTopics(): Topic[] {
+    const lower = this.searchText.toLowerCase();
+    let filtered = this.topics.filter(t => t.name.toLowerCase().includes(lower));
+
+    switch (this.sortOption) {
+      case 'alphabetical':
+        return filtered.sort((a, b) => a.name.localeCompare(b.name));
+      case 'total':
+        return filtered.sort((a, b) => this.getDrawingCount(b.id || '') - this.getDrawingCount(a.id || ''));
+      case 'unreviewed':
+        return filtered.sort((a, b) => this.getUnreviewedDrawingCount(b.id || '') - this.getUnreviewedDrawingCount(a.id || ''));
+      default:
+        return filtered;
+    }
+  }
+
+  getDrawingCount(topicId: string): number {
+    return this.drawingsByTopic[topicId || '']?.length || 0;
+  }
+
+  getUnreviewedDrawingCount(topicId: string): number {
+    return this.getUnreviewedDrawings(topicId).length;
   }
 
   getUnreviewedDrawings(topicId: string): Drawing[] {
     return this.drawingsByTopic[topicId || '']?.filter(d => d.status === 'unreviewed') || [];
   }
 
-  getRequestChangesDrawings(topicId: string): Drawing[] {
-    return this.drawingsByTopic[topicId || '']?.filter(d => d.status === 'request_changes') || [];
-  }
-
-  getReviewedDrawings(topicId: string): Drawing[] {
-    return this.drawingsByTopic[topicId || '']?.filter(d => d.status === 'reviewed') || [];
-  }
-
-  deleteDrawing(id: string, topic_id: string) {
-    this.drawingService.deleteDrawing(id).subscribe(() => {
-      if (this.drawingsByTopic[topic_id]) {
-        this.drawingsByTopic[topic_id] = this.drawingsByTopic[topic_id].filter(drawing => drawing.id !== id);
-      }
-    });
-  }
-
-  viewDrawing(drawing: Drawing, topic_name: string, topic_id: string) {
-    this.labelService.getLabel(drawing.label_id).subscribe(label => {
-      this.router.navigate(['/drawing'], {
-        queryParams: {
-          id: drawing.id,
-          topic_id: topic_id,
-          description: drawing.description,
-          topic: topic_name,
-          vector: JSON.stringify(drawing.vector),
-          label: label.name,
-          editable: false
-        }
-      });
-    });
-  }
-
-  downloadCSV(topic: Topic) {
-    const drawings = this.drawingsByTopic[topic.id || ''] || [];
-    const filename = topic.name + "_overview"
-    const drawingCount = drawings.length;
-
-    const csvData = drawings.map(drawing => ({
-      "Drawing ID": drawing.id || 'N/A',
-      "Description": drawing.description,
-      "Writer Name": this.getWriterName(drawing.writer_id),
-      "Vector Coordinates": drawing.vector.map(v => `(${v.x}, ${v.y})`).join('; ')
-    }));
-
-    const options = {
-      fieldSeparator: ',',
-      quoteStrings: '"',
-      decimalseparator: '.',
-      showLabels: true,
-      showTitle: true,
-      title: `Overview of ${topic.name}, Total drawings: ${drawingCount}`,
-      useBom: true,
-      noDownload: false,
-      headers: ["Drawing ID", "Description", "Writer Name", "Vector Coordinates"],
-      useHeader: false,
-      nullToEmptyString: true,
-    };
-
-    new AngularCsv(csvData, filename, options);
+  navigateToTopicOverview(topicId: string) {
+    this.router.navigate(['/topic-detail', topicId]);
   }
 }
