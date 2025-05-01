@@ -1,23 +1,46 @@
-<div class="w-full h-screen">
-    <h2 class="text-2xl text-center mb-4 pt-4 font-semibold text-gray-900">My Drawings</h2>
-	<div class="flex flex-wrap justify-center">
+<div class="min-h-screen md:h-screen w-full lg:w-[calc(100vw-256px)] p-5 font-montserrat">
+    <h1 class="text-2xl mb-5 leading-none">MY DRAWINGS</h1>
+    <div class="flex flex-col md:flex-row gap-5 items-center justify-between mb-5 w-full">
+        <input [(ngModel)]="filters.description" placeholder="Search description..." class="p-2 rounded border h-10 w-full md:w-auto" />
+        <div class="flex flex-col md:flex-row items-center gap-5 md:h-10 w-full md:w-auto">
+            <select [(ngModel)]="filters.topic" class="p-2 rounded border h-full w-full md:w-auto">
+                <option value="">All Topics</option>
+                <option *ngFor="let topic of topics" [value]="topic.id">{{ topic.name }}</option>
+              </select>
+              <select [(ngModel)]="filters.status" class="p-2 rounded border h-full w-full md:w-auto">
+                <option value="">All Statuses</option>
+                <option value="unreviewed">Unreviewed</option>
+                <option value="request_changes">Action Required</option>
+                <option value="reviewed">Reviewed</option>
+              </select>
+              <select [(ngModel)]="filters.sortOrder" class="p-2 rounded border h-full w-full md:w-auto">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+              </select>
+        </div>
+      </div>
+	<div class="flex flex-wrap md:flex-nowrap gap-5 w-full justify-center md:justify-normal">
 		@for(drawing of paginatedDrawings ;track $index) {
-            <div class="flex m-3 shadow-lg border border-black rounded-md overflow-hidden">
-                @if(drawing.status == 'request_changes') {
-                    <p class="bg-orange-300 text-center px-3 flex justify-center items-center text-xl font-bold">!</p>
-                }
-                <div class="h-20 w-72 bg-gray-100 rounded-l-md border border-1 border-gray-200 p-1">
-                    <div>
-                        <p>{{ drawing.topic_id }}</p>
-                        <p>{{ drawing.description }}</p>
-                    </div>
-                </div>
-                <div class="flex flex-col justify-center items-center text-white">
-                    <button class="bg-black hover:bg-gray-800 transition-all duration-100 w-20 h-full text-white rounded-tr-md"
-                    (click)="viewDrawing(drawing)">View</button>
-                    <button *ngIf="drawing.id" (click)="deleteDrawing(drawing.id!)" class="bg-red-500 hover:bg-red-400 transition-all duration-100 w-20 h-full rounded-br-md">Delete</button>
-                </div>
-            </div>
+            <div (click)="viewDrawing(drawing)" class="md:mt-0 w-full md:max-w-80 h-36 text-white p-5 bg-gray-600 rounded-md relative group cursor-pointer">
+				<div class="absolute top-0 left-0 w-full h-full text-white flex justify-center items-center bg-black rounded-md opacity-0 group-hover:opacity-80 transition-opacity duration-300">
+					<p>View</p>
+				</div>
+				<div class="flex flex-col justify-between h-full">
+					<p class="text-sm text-right">
+						@if(drawing.status == 'request_changes') {
+							<span class="animate-pulse text-orange-500">Action required</span>
+						}@else if (drawing.status == 'unreviewed') {
+							<span>Unreviewed</span>
+						}@else {
+							<span class="text-green-500">Reviewed</span>
+						}
+					</p>
+					<div class="mt-auto">
+						<p>{{ topicIdToName[drawing.topic_id] || 'Unknown Topic' }}</p>
+						<p class="text-sm">{{ drawing.description }}</p>
+					</div>
+				</div>
+			</div>
         }
 	</div>
     <!-- <div class="flex justify-center mt-4 absolute bottom-3 left-1/2 -translate-x-1/2 text-white">

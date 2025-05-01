@@ -33,67 +33,9 @@
   
 }
 
-<div class="relative">
-      <div class="w-full text-center my-8">
-        @if(userRole == 'UEjEnMYFPoKvwMOauVnY') {
-          <h2 class="text-2xl font-bold text-black">Drawing for {{ topic.name }}</h2>
-        }@else {
-          <h2 class="text-2xl font-bold text-black">New drawing for {{ topic.name }}</h2>
-        }
-      </div>
-      @if(userRole != 'UEjEnMYFPoKvwMOauVnY') {
-        <div class="w-full text-center flex justify-center mb-5">
-          @if(drawingObject.status === 'request_changes') {
-            <div class="flex flex-col">
-              <p class="text-center font-bold bg-orange-300 rounded-md p-5 max-w-full mx-5 md:mx-0">The manager of this topic requested you to make changes.<br />Please read the instructions below and update the drawing.</p>
-              <p class="max-w-full bg-gray-200 p-5 rounded-md mx-5 md:mx-0 mt-5">{{ drawingObject.changeRequestComment }}</p>
-            </div>
-          }@else if (drawingObject.status === 'unreviewed') {
-            <p class="text-center font-bold bg-gray-200 rounded-md p-5 max-w-96 mx-5">The manager is reviewing this drawing.</p>
-          }@else if(drawingObject.status === 'reviewed') {
-            <p class="text-center font-bold bg-gray-200 rounded-md p-5 max-w-96 mx-5">The manager has reviewed and approved this drawing.</p>
-          }@else {
-
-          }
-        </div>
-      }
+<div class="relative w-screen lg:w-[calc(100vw-256px)] font-montserrat p-5">
+      <h2 class="text-2xl text-black leading-none mb-5">DRAWING FOR {{ topic.name.toUpperCase() }}</h2>
       <div class="w-full flex flex-col lg:flex-row justify-center gap-5">
-        <!-- Dropdown -->
-        <div class="px-5 lg:px-0">
-          <div class="flex flex-col w-full">
-            <label for="dropdown" class="text-sm font-medium text-gray-700 mb-1">Select a label</label>
-            <select id="dropdown" class="h-10 rounded-md border bg-gray-100 text-black px-2" [(ngModel)]="selectedOption" [disabled]="userRole === 'UEjEnMYFPoKvwMOauVnY'">
-              <option *ngFor="let option of dropdownOptions" [value]="option">
-                {{ option }}
-              </option>
-            </select>
-          </div>
-          <!-- Description -->
-          <div class="w-full my-2">
-            <label for="description" class="text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea id="description" class="w-full border bg-gray-100 rounded-md p-2 h-20  text-black" [(ngModel)]="description" [disabled]="userRole === 'UEjEnMYFPoKvwMOauVnY'"></textarea>
-          </div>
-          @if(userRole == 'UEjEnMYFPoKvwMOauVnY') {
-            <div class="flex flex-col">
-              <label class="text-sm font-medium text-gray-700 mb-1" for="statusSelect">Set Drawing Status</label>
-              <select class="h-10 rounded-md border bg-gray-100 text-black px-2" id="statusSelect" [(ngModel)]="drawingObject.status" (change)="updateStatus(drawingObject.status)">
-                <option value="unreviewed">Unreviewed</option>
-                <option value="reviewed">Reviewed</option>
-                <option value="request_changes">Request Changes</option>
-              </select>
-            </div>
-          
-            @if(drawingObject.status === 'request_changes') {
-              <div class="flex flex-col mt-2">
-                <label for="changeComment" class="text-sm font-medium text-gray-700 mb-1">Request Comment</label>
-                <div class="flex flex-col items-center">
-                  <textarea id="changeComment" [(ngModel)]="changeRequestComment" class="w-full border border-black rounded-md p-2 h-20 bg-white text-black"></textarea>
-                  <app-button (click)="updateStatus('request_changes')" class="mt-2 rounded"  buttonText="Submit Request"></app-button>
-                </div>
-              </div>
-            }
-          }
-        </div>
         <div class="flex flex-col items-center">
           <div>
             <p class="text-sm font-medium text-gray-700 mb-1">Drawing area (400x400)</p>
@@ -106,31 +48,62 @@
                     width="400" height="400">
             </canvas>
           </div>
+         </div>
+         <div class="px-5 lg:px-0 flex justify-between flex-col">
+           <div>
+            @if(userRole != 'UEjEnMYFPoKvwMOauVnY') {
+              <p class="mb-2 leading-none">
+                @if(drawingObject.status == "unreviewed") {
+                  This drawing is <span class="font-bold">unreviewed</span>.
+                }@else if (drawingObject.status == 'reviewed') {
+                  <span class="">This drawing has been <span class="font-bold text-green-500">reviewed</span>.</span>
+                }
+              </p>
+            }
+            <div class="flex flex-col w-full">
+              <label for="dropdown" class="text-sm font-medium text-gray-700 mb-1">Select a label</label>
+              <select id="dropdown" class="h-10 rounded-md border bg-gray-100 text-black px-2" [(ngModel)]="selectedOption" [disabled]="userRole === 'UEjEnMYFPoKvwMOauVnY'">
+                <option *ngFor="let option of dropdownOptions" [value]="option">
+                  {{ option }}
+                </option>
+              </select>
+            </div>
+            <div class="w-full my-2">
+              <label for="description" class="text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea id="description" class="w-full border bg-gray-100 rounded-md p-2 h-20  text-black" [(ngModel)]="description" [disabled]="userRole === 'UEjEnMYFPoKvwMOauVnY'"></textarea>
+            </div>
+            @if(userRole == 'UEjEnMYFPoKvwMOauVnY') {
+              <div class="flex flex-col">
+                <label class="text-sm font-medium text-gray-700 mb-1" for="statusSelect">Set Drawing Status</label>
+                <select class="h-10 rounded-md border bg-gray-100 text-black px-2" id="statusSelect" [(ngModel)]="drawingObject.status" (change)="updateStatus(drawingObject.status)">
+                  <option value="unreviewed">Unreviewed</option>
+                  <option value="reviewed">Reviewed</option>
+                  <option value="request_changes">Request Changes</option>
+                </select>
+              </div>
+              @if(drawingObject.status === 'request_changes') {
+                <div class="flex flex-col mt-2">
+                  <label for="changeComment" class="text-sm font-medium text-gray-700 mb-1">Request Comment</label>
+                  <div class="flex flex-col items-center">
+                    <textarea id="changeComment" [(ngModel)]="changeRequestComment" class="w-full border border-black rounded-md p-2 h-20 bg-white text-black"></textarea>
+                    <app-button (click)="updateStatus('request_changes')" class="mt-2 rounded"  buttonText="Submit Request"></app-button>
+                  </div>
+                </div>
+              }
+            }
+           </div>
+          
           @if(userRole != 'UEjEnMYFPoKvwMOauVnY') {
-            <div class="w-full flex justify-center gap-4 z-10 my-5">
-              <app-button (click)="clearCanvas()" buttonText="Clear" class="rounded"></app-button>
+            <div class="w-full flex justify-center gap-4 z-10">
+              <button (click)="clearCanvas()" class="w-1/2 text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 h-10 text-sm">CLEAR</button>
               @if (updateDrawing) {
-                <app-button buttonText="Update" (click)="submitDrawing()" class="rounded"></app-button>
+                <button (click)="submitDrawing()" class="w-1/2 text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 h-10 text-sm">UPDATE</button>
               } @else {
-                <app-button buttonText="Submit" (click)="submitDrawing()" class="rounded"></app-button>
+                <button (click)="submitDrawing()" class="w-1/2 text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 h-10 text-sm">SUBMIT</button>
               }
             </div>
           }
-          
-         </div>
-         
-        
-      
-        <!-- Buttons -->
-        
-          
-          <!-- Spacer for the canvas (just a placeholder to reserve space) -->
-          <!-- <div class="h-[380px] w-full"></div> -->
-          
-          <!-- Canvas absolutely positioned inside the reserved space -->
-          <!-- <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-0"> -->
-          
-  
+        </div>
 </div>
 
   
