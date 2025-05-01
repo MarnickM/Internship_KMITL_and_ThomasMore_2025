@@ -46,7 +46,7 @@ An **Angular-based** web application where users with different roles (**Writer*
 ---
 
 ## **🛠️ Technologies Used**  
-- **Frontend**: Angular, TypeScript  
+- **Frontend**: Angular, TypeScript, Tailwind  
 - **Database**: Firebase Firestore  
 - **Hosting**: Firebase Hosting  
 - **Authentication**: Custom Google Sign-In with Angular Guards (separate from Firebase Auth)  
