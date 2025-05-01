@@ -54,7 +54,8 @@ An **Angular-based** web application where users with different roles (**Writer*
 ---
 
 ## **🛢 Database Design**  
-![UML_picture](https://github.com/user-attachments/assets/2def59e8-3e47-4418-abfa-4962ea22f3b7)
+![afbeelding](https://github.com/user-attachments/assets/b148821f-56bc-47bd-a1d6-9cadad04cf11)
+
 
 ---
 
