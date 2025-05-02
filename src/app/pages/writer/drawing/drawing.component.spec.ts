@@ -18,7 +18,14 @@ describe('DrawingComponent', () => {
   let mockAuthService: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
-    mockDrawingService = jasmine.createSpyObj('DrawingService', ['addDrawing', 'updateDrawing', 'getDrawingById']);
+    // Update this line to include getDrawing
+    mockDrawingService = jasmine.createSpyObj('DrawingService', [
+      'addDrawing', 
+      'updateDrawing', 
+      'getDrawingById',
+      'getDrawing'
+    ]);
+    
     mockLabelService = jasmine.createSpyObj('LabelService', ['getLabelsByTopic']);
     mockUserService = jasmine.createSpyObj('UserService', ['getUserByEmail']);
     mockAuthService = jasmine.createSpyObj('AuthService', ['getUser']);
@@ -36,7 +43,7 @@ describe('DrawingComponent', () => {
               topic: 'test topic',
               label: 'test label',
               vector: JSON.stringify([{x: 10, y: 10}]),
-              name: undefined // Simulate coming from submissions overview
+              name: undefined
             }),
             snapshot: {
               queryParams: {
@@ -94,6 +101,18 @@ describe('DrawingComponent', () => {
 
     mockDrawingService.addDrawing.and.returnValue(of('new-drawing-id'));
     mockDrawingService.updateDrawing.and.returnValue(of(void 0));
+    
+    // Add this mock for getDrawing
+    mockDrawingService.getDrawing.and.returnValue(of({
+      id: 'test-drawing-id',
+      writer_id: 'test-user-id',
+      label_id: 'label1',
+      topic_id: 'test-topic-id',
+      vector: [{x: 10, y: 10}],
+      description: 'test description',
+      status: 'unreviewed',
+      created_at: new Date()
+    }));
 
     fixture = TestBed.createComponent(DrawingComponent);
     component = fixture.componentInstance;

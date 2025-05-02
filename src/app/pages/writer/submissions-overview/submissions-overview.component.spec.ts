@@ -35,7 +35,8 @@ describe('SubmissionsOverviewComponent', () => {
       topic_id: 'topic1',
       vector: [{x: 10, y: 10}],
       description: 'Test drawing',
-      created_at: new Date()
+      created_at: new Date(),
+      status: 'unreviewed'
     },
     {
       id: 'drawing2',
@@ -44,14 +45,34 @@ describe('SubmissionsOverviewComponent', () => {
       topic_id: 'topic2',
       vector: [{x: 20, y: 20}],
       description: 'Another drawing',
-      created_at: new Date()
+      created_at: new Date(),
+      status: 'unreviewed'
+    }
+  ];
+
+  const mockTopics = [
+    {
+      id: 'topic1',
+      name: 'Test Topic 1',
+      creator_email: 'creator@example.com',
+      access_user_emails: ['test@example.com'],
+      ui_image: ''
+    },
+    {
+      id: 'topic2',
+      name: 'Test Topic 2',
+      creator_email: 'creator@example.com',
+      access_user_emails: ['other@example.com'],
+      ui_image: ''
     }
   ];
 
   const mockTopic = {
     id: 'topic1',
     name: 'Test Topic',
-    creator_email: 'creator@example.com'
+    creator_email: 'creator@example.com',
+    access_user_emails: [''],
+    ui_image: ''
   };
 
   const mockLabel = {
@@ -63,7 +84,7 @@ describe('SubmissionsOverviewComponent', () => {
   beforeEach(async () => {
     // Create spy objects for all services
     mockDrawingService = jasmine.createSpyObj('DrawingService', ['getDrawingsByWriter', 'deleteDrawing']);
-    mockTopicService = jasmine.createSpyObj('TopicService', ['getTopic']);
+    mockTopicService = jasmine.createSpyObj('TopicService', ['getTopic', 'getTopics']); // Added getTopics here
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockLabelService = jasmine.createSpyObj('LabelService', ['getLabel']);
     mockUserService = jasmine.createSpyObj('UserService', ['getUserByEmail']);
@@ -90,6 +111,9 @@ describe('SubmissionsOverviewComponent', () => {
     mockDrawingService.getDrawingsByWriter.and.returnValue(of(mockDrawings));
     mockTopicService.getTopic.and.returnValue(of(mockTopic));
     mockLabelService.getLabel.and.returnValue(of(mockLabel));
+    
+    // Add this mock for getTopics
+    mockTopicService.getTopics.and.returnValue(of(mockTopics));
 
     fixture.detectChanges();
   });
@@ -97,6 +121,18 @@ describe('SubmissionsOverviewComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should load topics on initialization', fakeAsync(() => {
+    // Trigger ngOnInit
+    fixture.detectChanges();
+    tick();
+
+    expect(mockTopicService.getTopics).toHaveBeenCalled();
+    expect(component.topics).toEqual([mockTopics[0]]);
+    expect(component.topicIdToName).toEqual({
+      'topic1': 'Test Topic 1'
+    });
+  }));
 
   it('should load user drawings on initialization', fakeAsync(() => {
     // Trigger ngOnInit

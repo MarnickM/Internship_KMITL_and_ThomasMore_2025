@@ -2,31 +2,55 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { TopicOverviewComponent } from './topic-overview.component';
 import { TopicService } from '../../../services/topics/topic-service.service';
 import { Router } from '@angular/router';
-import { ButtonComponent } from '../../../components/button/button.component';
 import { of } from 'rxjs';
 import { Topic } from '../../../services/topics/topic';
+import { AuthService } from '../../../services/auth.service';
+import { DrawingService } from '../../../services/drawings/drawing-service.service';
+import { UserService } from '../../../services/users/user-service.service';
+import { LabelService } from '../../../services/labels/label-service.service';
+import { CommonModule } from '@angular/common';
 
 describe('TopicOverviewComponent', () => {
   let component: TopicOverviewComponent;
   let fixture: ComponentFixture<TopicOverviewComponent>;
   let mockTopicService: jasmine.SpyObj<TopicService>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let mockAuthService: jasmine.SpyObj<AuthService>;
+  let mockDrawingService: jasmine.SpyObj<DrawingService>;
+  let mockUserService: jasmine.SpyObj<UserService>;
+  let mockLabelService: jasmine.SpyObj<LabelService>;
 
   const mockTopics: Topic[] = [
-    { id: 'topic1', name: 'Test Topic 1', creator_email: 'creator1@example.com', access_user_emails: ['example@example.com'] },
-    { id: 'topic2', name: 'Test Topic 2', creator_email: 'creator2@example.com', access_user_emails: ['example@example.com'] }
+    {
+      id: 'topic1', name: 'Test Topic 1', creator_email: 'creator1@example.com', 
+      access_user_emails: ['example@example.com'], ui_image: ''
+    },
+    {
+      id: 'topic2', name: 'Test Topic 2', creator_email: 'creator2@example.com', 
+      access_user_emails: ['example@example.com'], ui_image: ''
+    }
   ];
 
+  const mockUser = { email: 'example@example.com' };
+
   beforeEach(async () => {
-    // Create spy objects for services
-    mockTopicService = jasmine.createSpyObj('TopicService', ['getTopics']);
+    // Create spy objects for all services
+    mockTopicService = jasmine.createSpyObj('TopicService', ['getTopics', 'getTopic']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+    mockAuthService = jasmine.createSpyObj('AuthService', ['getUser']);
+    mockDrawingService = jasmine.createSpyObj('DrawingService', ['getDrawingsByWriter']);
+    mockUserService = jasmine.createSpyObj('UserService', ['getUserByEmail']);
+    mockLabelService = jasmine.createSpyObj('LabelService', ['getLabel']);
 
     await TestBed.configureTestingModule({
-      imports: [TopicOverviewComponent, ButtonComponent],
+      imports: [TopicOverviewComponent, CommonModule],
       providers: [
         { provide: TopicService, useValue: mockTopicService },
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: DrawingService, useValue: mockDrawingService },
+        { provide: UserService, useValue: mockUserService },
+        { provide: LabelService, useValue: mockLabelService }
       ]
     }).compileComponents();
 
@@ -35,6 +59,9 @@ describe('TopicOverviewComponent', () => {
 
     // Setup mock responses
     mockTopicService.getTopics.and.returnValue(of(mockTopics));
+    mockAuthService.getUser.and.returnValue(mockUser);
+    mockUserService.getUserByEmail.and.returnValue(of({ id: 'user1', name: 'user1', email: '', role_id: '', image: '' }));
+    mockDrawingService.getDrawingsByWriter.and.returnValue(of([]));
 
     fixture.detectChanges();
   });
@@ -49,7 +76,7 @@ describe('TopicOverviewComponent', () => {
     tick();
 
     expect(mockTopicService.getTopics).toHaveBeenCalled();
-    expect(component.topics).toEqual(mockTopics);
+    expect(component.topics).toEqual(mockTopics.filter(t => t.access_user_emails.includes('example@example.com')));
   }));
 
   it('should navigate to drawing page with topic parameters', () => {
@@ -61,16 +88,30 @@ describe('TopicOverviewComponent', () => {
     });
   });
 
-  it('should display topics in the template', fakeAsync(() => {
+  it('should filter topics based on user email', fakeAsync(() => {
     fixture.detectChanges();
     tick();
-    fixture.detectChanges();
 
-    const compiled = fixture.nativeElement;
-    const topicElements = compiled.querySelectorAll('.topic-item');
-
-    expect(topicElements.length).toBe(mockTopics.length);
-    expect(topicElements[0].textContent).toContain(mockTopics[0].name);
-    expect(topicElements[1].textContent).toContain(mockTopics[1].name);
+    expect(component.topics?.length).toBe(2);
+    expect(component.topics).toEqual(mockTopics);
   }));
+
+  it('should handle pagination correctly', () => {
+    // Set mock data directly for pagination tests
+    component.topics = mockTopics;
+    component.topicsPerPage = 1;
+
+    expect(component.paginatedTopics.length).toBe(1);
+    expect(component.paginatedTopics[0]).toEqual(mockTopics[0]);
+    expect(component.totalTopicPages).toBe(2);
+
+    component.nextTopicPage();
+    expect(component.paginatedTopics[0]).toEqual(mockTopics[1]);
+
+    component.prevTopicPage();
+    expect(component.paginatedTopics[0]).toEqual(mockTopics[0]);
+
+    component.setTopicPage(1);
+    expect(component.paginatedTopics[0]).toEqual(mockTopics[1]);
+  });
 });
