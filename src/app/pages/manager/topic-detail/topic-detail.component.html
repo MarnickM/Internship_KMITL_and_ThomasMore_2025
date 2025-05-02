@@ -3,9 +3,9 @@
       <p>Loading...</p>
     } @else if (topic) {
       <div class="">
-        <div class="flex justify-between">
+        <div class="flex flex-col md:flex-row md:justify-between">
           <div class="flex gap-5">
-            <img [src]="topic.ui_image" alt="Topic image" class="w-32 h-32 object-cover rounded-md">
+            <img [src]="topic.ui_image" alt="Topic image" class="w-32 h-32 object-cover rounded-md mb-5 md:mb-0">
             <div>
               <h1 class="text-2xl leading-none">{{ topic.name }}</h1>
               <p class="text-gray-600 mt-2">Total drawings: {{ drawings.length }}</p>
@@ -13,14 +13,14 @@
             </div>
           </div>
           <div>
-            <div class="flex gap-2">
-              <button (click)="toggleEditMode()" class="px-4 py-2 bg-blue-500 text-white rounded-md">
+            <div class="flex flex-col gap-2">
+              <button (click)="toggleEditMode()" class="px-4 py-2 bg-blue-500 text-white rounded-md w-full md:w-44">
                 {{ editMode ? 'Cancel' : 'Edit' }}
               </button>
-              <button (click)="deleteTopic()" class="px-4 py-2 bg-red-500 text-white rounded-md">
+              <button (click)="deleteTopic()" class="px-4 py-2 bg-red-500 text-white rounded-md w-full md:w-44">
                 Delete
               </button>
-              <button (click)="downloadCSV()" class="px-4 py-2 bg-green-500 text-white rounded-md">
+              <button (click)="downloadCSV()" class="px-4 py-2 bg-green-500 text-white rounded-md w-full md:w-44">
                 Export CSV
               </button>
             </div>
