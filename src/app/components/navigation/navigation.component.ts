@@ -28,13 +28,15 @@ export class NavigationComponent implements OnInit {
   ngOnInit() {
     this.authService.user$.subscribe(user => {
       this.user = user;
-      this.loggedIn = !!user; // Update login status
-
-      if (this.loggedIn) {
-        this.fetchUserRole(); // Fetch user role once logged in
+      this.loggedIn = !!user;
+  
+      if (this.loggedIn && user?.email) {
+        this.fetchUserRole();
       }
     });
+    
   }
+  
 
   // Fetch the user role based on the email after login
   fetchUserRole() {

@@ -25,7 +25,7 @@ export class TopicOverviewComponent implements OnInit {
   topicIdToName: Record<string, string> = {};
 
 
-  constructor(
+  constructor( 
     private topicService: TopicService,
     private router: Router,
     private authService: AuthService,
