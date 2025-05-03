@@ -26,102 +26,68 @@
             </div>
           </div>
         </div>
-        
-        <!-- Header with edit button -->
-        <div class="flex justify-between items-center mb-4">
-          <div class="flex items-center gap-4">
-            
-          </div>
-          
-        </div>
   
-        <!-- Edit Form (shown when editMode is true) -->
         @if(editMode) {
-          <div class="bg-gray-100 p-4 rounded-lg mb-6">
-            <h2 class="text-xl font-semibold mb-4">Edit Topic</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Name and Image -->
-              <div>
-                <div class="mb-4">
-                  <label class="block text-sm font-medium mb-1">Topic Name</label>
-                  <input [(ngModel)]="editForm.name" class="w-full p-2 border rounded">
+          <div class="absolute left-0 top-0 min-h-screen md:h-screen w-full lg:w-[calc(100vw-256px)] bg-white z-50 p-5">
+            <p class="text-2xl mb-5 leading-none">EDIT TOPIC</p>
+            <div class="flex flex-col gap-4">
+              <input [(ngModel)]="editForm.name"
+              placeholder="Topic name"
+              class="p-2 rounded border h-10 w-full md:w-64">
+              <input [(ngModel)]="editForm.ui_image"
+              placeholder="Topic image URL"
+              class="p-2 rounded border h-10 w-full md:w-64">
+              <div class="">
+                <div class="flex gap-2 mb-2">
+                  <input [(ngModel)]="newLabelName"
+                        placeholder="Enter label name"
+                        class="p-2 rounded border h-10 w-full md:w-96">
+                  <button (click)="addLabel()"
+                        class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-40 h-10">
+                      Add Label
+                  </button>
                 </div>
-                <div class="mb-4">
-                  <label class="block text-sm font-medium mb-1">Image URL</label>
-                  <input [(ngModel)]="editForm.ui_image" class="w-full p-2 border rounded">
-                </div>
-              </div>
-  
-              <!-- Preview -->
-              <div>
-                <label class="block text-sm font-medium mb-1">Preview</label>
-                <div class="border rounded p-2">
-                  <img [src]="editForm.ui_image || 'https://via.placeholder.com/150'" 
-                       alt="Preview" 
-                       class="w-full h-32 object-cover rounded">
-                  <p class="mt-2 text-center">{{ editForm.name || 'Topic name' }}</p>
-                </div>
-              </div>
-            </div>
-  
-            <!-- Labels Management -->
-            <div class="mt-4">
-              <h3 class="font-medium mb-2">Labels</h3>
-              <div class="flex gap-2 mb-2">
-                <input [(ngModel)]="newLabelName" 
-                      placeholder="New label name" 
-                      class="flex-1 p-2 border rounded">
-                <button (click)="addLabel()" class="px-4 py-2 bg-green-500 text-white rounded-md">
-                  Add Label
-                </button>
-              </div>
-              <ul class="border rounded divide-y">
-                @for(label of labels; track label.id) {
-                  <li class="flex justify-between items-center p-2">
-                    <span>{{ label.name }}</span>
-                    <button (click)="removeLabel(label.id)" 
+                <ul class="md:w-96">
+                  @for(label of labels; track label.id) {
+                    <li class="flex justify-between items-center p-2 bg-gray-100 rounded-md">
+                      <span>{{label.name}}</span>
+                      <button (click)="removeLabel(label.id)"
                             class="text-red-500 hover:text-red-700">
-                      Remove
-                    </button>
-                  </li>
-                }
-              </ul>
-            </div>
-  
-            <!-- Access Management -->
-            <div class="mt-4">
-              <h3 class="font-medium mb-2">Access Users</h3>
-              <div class="flex gap-2 mb-2">
-                <select [(ngModel)]="selectedUserEmail" class="flex-1 p-2 border rounded">
-                  <option value="" disabled selected>Select user</option>
-                  @for(user of allUsers; track user.id) {
-                    <option [value]="user.email">{{ user.email }}</option>
+                          Remove
+                      </button>
+                    </li>
                   }
-                </select>
-                <button (click)="addAccessUser()" class="px-4 py-2 bg-green-500 text-white rounded-md">
-                  Add User
-                </button>
+                </ul>
               </div>
-              <ul class="border rounded divide-y">
-                @for(email of editForm.access_user_emails; track email) {
-                  <li class="flex justify-between items-center p-2">
-                    <span>{{ email }}</span>
-                    <button (click)="removeAccessUser(email)" 
-                            class="text-red-500 hover:text-red-700">
-                      Remove
-                    </button>
-                  </li>
-                }
-              </ul>
+              <div class="">
+                <div class="flex gap-2 mb-2">
+                  <select [(ngModel)]="selectedUserEmail" class="p-2 rounded border h-10 w-full md:w-96">
+                    <option value="" disabled selected>Select user email</option>
+                    @for(user of allUsers; track user.id) {
+                      <option [value]="user.email">{{user.email}}</option>
+                    }
+                  </select>
+                  <button (click)="addAccessUser()"
+                        class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-40 h-10">
+                      Add Access
+                  </button>
+                </div>
+                <ul class="md:w-96">
+                  @for(email of editForm.access_user_emails; track email) {
+                    <li class="flex items-center p-2 bg-gray-100 rounded-md">
+                      <span class="truncate flex-1 min-w-0 pr-2">{{email}}</span>
+                      <button (click)="removeAccessUser(email)"
+                              class="text-red-500 hover:text-red-700 whitespace-nowrap">
+                          Remove
+                      </button>
+                    </li>
+                  }
+                </ul>
+              </div>
             </div>
-  
-            <!-- Save Button -->
-            <div class="mt-4 flex justify-end">
-              <button (click)="saveChanges()" 
-                      class="px-4 py-2 bg-blue-500 text-white rounded-md">
-                Save Changes
-              </button>
+            <div class="flex gap-5 mt-4">
+              <button (click)="toggleEditMode()" class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-32 h-10">CANCEL</button>
+              <button (click)="saveChanges()" class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-32 h-10">SAVE</button>
             </div>
           </div>
         }
@@ -155,6 +121,7 @@
           @for (drawing of filteredDrawings; track drawing.id) {
             <div (click)="viewDrawing(drawing)" class="md:mt-0 w-full md:max-w-80 h-36 text-white p-5 bg-gray-600 rounded-md relative group cursor-pointer">
               <div class="absolute top-0 left-0 w-full h-full text-white flex justify-center items-center bg-black rounded-md opacity-0 group-hover:opacity-80 transition-opacity duration-300">
+                <p (click)="$event.stopPropagation(); deleteDrawing(drawing.id || '')" class="absolute left-3 top-3 w-6 h-6"><svg viewBox="-0.5 0 19 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#ff0000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>icon/18/icon-delete</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="out" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"> <path d="M4.91666667,14.8888889 C4.91666667,15.3571429 5.60416667,16 6.0625,16 L12.9375,16 C13.3958333,16 14.0833333,15.3571429 14.0833333,14.8888889 L14.0833333,6 L4.91666667,6 L4.91666667,14.8888889 L4.91666667,14.8888889 L4.91666667,14.8888889 Z M15,3.46500003 L12.5555556,3.46500003 L11.3333333,2 L7.66666667,2 L6.44444444,3.46500003 L4,3.46500003 L4,4.93000007 L15,4.93000007 L15,3.46500003 L15,3.46500003 L15,3.46500003 Z" id="path" fill="#ff0000" sketch:type="MSShapeGroup"> </path> </g> </g></svg></p>
                 <p>View</p>
               </div>
               <div class="flex flex-col justify-between h-full">

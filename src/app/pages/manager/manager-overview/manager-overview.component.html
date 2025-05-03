@@ -44,12 +44,12 @@
                 Add Access
             </button>
           </div>
-          <ul class="w-96">
+          <ul class="md:w-96">
             @for(email of topicForm.access_user_emails; track email) {
-              <li class="flex justify-between items-center p-2 bg-gray-100 rounded-md">
-                <span>{{email}}</span>
+              <li class="flex items-center p-2 bg-gray-100 rounded-md">
+                <span class="truncate flex-1 min-w-0 pr-2">{{email}}</span>
                 <button (click)="removeAccessEmail(email)"
-                      class="text-red-500 hover:text-red-700">
+                      class="text-red-500 hover:text-red-700 whitespace-nowrap">
                     Remove
                 </button>
               </li>

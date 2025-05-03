@@ -276,4 +276,13 @@ export class TopicDetailComponent implements OnInit {
 
     new AngularCsv(csvData, filename, options);
   }
+
+  deleteDrawing(id: string) {
+    const confirmation = window.confirm('Are you sure you want to delete this drawing?');
+    if (confirmation) {
+      this.drawingService.deleteDrawing(id).subscribe(() => {
+        this.drawings = this.drawings?.filter(drawing => drawing.id !== id);
+      });
+    }
+  }
 }

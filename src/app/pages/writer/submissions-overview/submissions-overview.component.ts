@@ -104,9 +104,12 @@ export class SubmissionsOverviewComponent {
   }
 
   deleteDrawing(id: string) {
-    this.drawingService.deleteDrawing(id).subscribe(() => {
-      this.drawings = this.drawings?.filter(drawing => drawing.id !== id);
-    });
+    const confirmation = window.confirm('Are you sure you want to delete this drawing?');
+    if (confirmation) {
+      this.drawingService.deleteDrawing(id).subscribe(() => {
+        this.drawings = this.drawings?.filter(drawing => drawing.id !== id);
+      });
+    }
   }
 
   filters = {

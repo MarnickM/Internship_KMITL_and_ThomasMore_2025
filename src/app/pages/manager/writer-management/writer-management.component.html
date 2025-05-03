@@ -32,20 +32,6 @@
 			</tbody>
 		</table>
 	</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-	<!-- Pagination -->
 	<div class="flex justify-center mt-4">
 		<button *ngFor="let page of getPageNumbers()"
 			[class.bg-black]="currentPage === page"
@@ -54,74 +40,40 @@
 			{{ page }}
 		</button>
 	</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-	<!-- Modal -->
 	<div *ngIf="isModalOpen"
-		class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-		<div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 border border-black">
-			<h2 class="text-xl font-bold mb-4 text-black">Edit User Role</h2>
-			<p class="mb-4 text-black">
-				<strong>Name:</strong>
-				{{ selectedUser?.name }}
-			</p>
+		class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+		<div class="bg-white rounded-lg w-full max-w-md p-6">
+			<p class="text-2xl mb-5 leading-none">EDIT USER ROLE</p>
 
 
+			<div class="flex flex-col gap-4">
+				<div class="p-2 bg-gray-100 rounded-md">
+					<p class="text-black">
+						<strong>Name:</strong>
+						{{ selectedUser?.name }}
+					</p>
+				</div>
 
 
+				<div>
+					<label class="block text-sm font-medium mb-1">Role</label>
+					<select [(ngModel)]="selectedRoleId"
+						class="p-2 rounded border h-10 w-full">
+						<option [value]="environment.writer_role_id">Writer</option>
+						<option [value]="environment.no_role">No Role</option>
+					</select>
+				</div>
+			</div>
 
 
-
-
-
-
-
-
-
-			<!-- Role Dropdown -->
-			<label for="role"
-				class="block text-sm font-medium text-black">
-				Role
-			</label>
-			<select [(ngModel)]="selectedRoleId"
-				id="role"
-				class="mt-1 block w-full px-3 py-2 border border-black rounded-md shadow-sm bg-white text-black focus:outline-none focus:ring-black focus:border-black">
-				<option [value]="environment.writer_role_id">Writer</option>
-				<option [value]="environment.no_role">No Role</option>
-			</select>
-
-
-
-
-
-
-
-
-
-
-
-
-
-			<!-- Modal Buttons -->
-			<div class="mt-6 flex justify-end space-x-4">
+			<div class="flex gap-5 mt-4">
 				<button (click)="closeModal()"
-					class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">
-					Cancel
+					class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-32 h-10">
+					CANCEL
 				</button>
 				<button (click)="saveRoleChanges()"
-					class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
-					Save
+					class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-32 h-10">
+					SAVE
 				</button>
 			</div>
 		</div>
