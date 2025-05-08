@@ -1,5 +1,6 @@
 <div class="min-h-screen md:h-screen w-full lg:w-[calc(100vw-256px)] font-montserrat">
-	<div class="w-full h-3/5 p-5 flex flex-col md:flex-row gap-5 justify-center items-center text-white">
+	<h1 class="text-2xl mb-5 leading-none absolute left-5 top-5">SELECT A TOPIC</h1>
+	<div class="w-full h-3/5 p-5 flex flex-col md:flex-row gap-5 justify-center items-center text-white mt-10 md:mt-0">
 		@for (topic of topics; track $index) {
 			<div (click)="navigateToDrawing(topic)" class="cursor-pointer overflow-hidden w-64 h-64 shadow-md bg-gray-700 rounded-md flex justify-center items-center group relative">
 				<div class="absolute top-0 left-0 w-full h-full text-white flex justify-center items-center bg-black rounded-md opacity-0 group-hover:opacity-80 transition-opacity duration-300 z-30">

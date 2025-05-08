@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { LabelService } from '../../../services/labels/label-service.service';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/users/user-service.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-topic-management',
@@ -42,6 +43,7 @@ export class TopicManagementComponent implements OnInit {
     private drawingService: DrawingService,
     private labelService: LabelService,
     private userService: UserService,
+    private location: Location
   ) { }
 
   ngOnInit() {
@@ -277,6 +279,11 @@ export class TopicManagementComponent implements OnInit {
       });
 
       this.deleteModalVisible = false;
+      this.goBack();
     }
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

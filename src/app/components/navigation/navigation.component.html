@@ -33,11 +33,35 @@
 							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10 mt-2">
 							Writer Management
 						</button>
+						<button (click)="navigateToTopicOverview()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10 mt-2">
+							Create Drawings
+						</button>
+						<button (click)="navigateToMyDrawings()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10 mt-2">
+							My Drawings
+						</button>
 					</ng-container>
 					<ng-container *ngIf="userRole == 'rnBKQzZVTlsqyOqufFq5'">
 						<button (click)="navigateToManagerManagement()"
 							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10">
 							Manager Management
+						</button>
+						<button (click)="navigateToWriterManagement()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10 mt-2">
+							Writer Management
+						</button>
+						<button (click)="navigateToManagerOverview()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10 mt-2">
+							Topic Overview
+						</button>
+						<button (click)="navigateToTopicOverview()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10 mt-2">
+							Create Drawings
+						</button>
+						<button (click)="navigateToMyDrawings()"
+							class="text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 w-full h-10 mt-2">
+							My Drawings
 						</button>
 					</ng-container>
 					<ng-container *ngIf="userRole == 'dfaNnrXgH6bqFys0Sw44'">
