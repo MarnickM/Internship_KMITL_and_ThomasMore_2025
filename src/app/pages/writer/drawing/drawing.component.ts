@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ButtonComponent } from "../../../components/button/button.component";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Topic } from '../../../services/topics/topic';
 import { LabelService } from '../../../services/labels/label-service.service';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { Vector } from '../../../services/drawings/vector';
 import { UserService } from '../../../services/users/user-service.service';
 import { AuthService } from '../../../services/auth.service';
 import { filter, firstValueFrom, take } from 'rxjs';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-drawing',
@@ -52,7 +53,8 @@ export class DrawingComponent {
     private labelService: LabelService,
     private drawingService: DrawingService,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private location: Location
   ) {
     this.route.queryParams.subscribe(params => {
       if (params['name'] != undefined) {
@@ -297,5 +299,9 @@ export class DrawingComponent {
       this.ctx.closePath();
     }
     this.drawing = false;
+  }
+
+  goBack() {
+    this.location.back();
   }
 }
