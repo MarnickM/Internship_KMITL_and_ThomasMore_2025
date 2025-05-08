@@ -247,34 +247,44 @@ export class TopicDetailComponent implements OnInit {
 
   downloadCSV() {
     if (!this.topic) return;
-
     const drawings = this.drawings;
     const filename = `${this.topic.name}_overview`.replace(/\s+/g, '_');
-    const drawingCount = drawings.length;
 
     const csvData = drawings.map(drawing => ({
       "Drawing ID": drawing.id || 'N/A',
-      "Description": drawing.description || 'N/A',
-      "Writer Name": this.getWriterName(drawing.writer_id),
-      "Status": drawing.status || 'N/A',
-      "Created At": drawing.created_at ? new Date(drawing.created_at).toLocaleString() : 'N/A',
-      "Vector Coordinates": drawing.vector?.map(v => `(${v.x}, ${v.y})`).join('; ') || 'N/A'
+      "Label": this.getLabelName(drawing.label_id),
+      "Description": drawing.description,
+      "Writer Email": this.getWriterEmail(drawing.writer_id),
+      "Vector Coordinates": drawing.vector.map(v => `(${v.x.toFixed(2)}, ${v.y.toFixed(2)})`).join('; ')
     }));
 
     const options = {
       fieldSeparator: ',',
       quoteStrings: '"',
-      decimalSeparator: '.',
+      decimalseparator: '.',
       showLabels: true,
-      showTitle: true,
-      title: `Overview of ${this.topic.name}\nTotal drawings: ${drawingCount}`,
+      showTitle: false,
+      title: `Overview of ${this.topic.name}`,
       useBom: true,
-      headers: ["Drawing ID", "Description", "Writer Name", "Status", "Created At", "Vector Coordinates"],
-      useHeader: true,
+      noDownload: false,
+      headers: ["Drawing ID", "Label", "Description", "Writer Email", "Vector Coordinates"],
+      useHeader: false,
       nullToEmptyString: true,
     };
 
     new AngularCsv(csvData, filename, options);
+  }
+
+  getWriterEmail(writerId: string | undefined): string {
+    if (!writerId) return 'Unknown';
+    const writer = this.allUsers.find(u => u.id === writerId);
+    return writer?.email || 'Unknown';
+  }
+
+  getLabelName(labelId: string | undefined): string {
+    if (!labelId) return 'Unknown';
+    const label = this.labels.find(l => l.id === labelId);
+    return label?.name || 'Unknown';
   }
 
   deleteDrawing(id: string) {
