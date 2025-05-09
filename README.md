@@ -1,5 +1,8 @@
 # **Hand Drawing Application** 🎨✏️  
 
+### This project is a collaboration between Thomas More in Geel, Belgium and KMITL in Bangkok, Thailand.
+![Thomas More and KMITL](tm_kmitl.jpg)
+
 An **Angular-based** web application where users with different roles (**Writer**, **Manager**, **Admin**) collaborate on creating and managing labeled drawings. Uses **Firebase Firestore (Database) + Hosting** and a **separate Google Sign-In** for authentication.  
 
 ![Schermafbeelding 2025-04-23 120229](https://github.com/user-attachments/assets/de6e3350-b8a8-45ce-a2a6-aedae20969d3)
