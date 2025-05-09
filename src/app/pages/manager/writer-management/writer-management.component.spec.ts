@@ -19,7 +19,6 @@ describe('WriterManagementComponent', () => {
   ];
 
   beforeEach(async () => {
-    // Create spy object for UserService
     mockUserService = jasmine.createSpyObj('UserService', [
       'getUsersByRoles', 
       'updateUser', 
@@ -36,7 +35,6 @@ describe('WriterManagementComponent', () => {
     fixture = TestBed.createComponent(WriterManagementComponent);
     component = fixture.componentInstance;
 
-    // Setup mock responses
     mockUserService.getUsersByRoles.and.returnValue(of(mockUsers));
     mockUserService.updateUser.and.returnValue(of(undefined));
     mockUserService.deleteUser.and.returnValue(of(undefined));
@@ -49,7 +47,6 @@ describe('WriterManagementComponent', () => {
   });
 
   it('should load users with writer or no role on initialization', fakeAsync(() => {
-    // Trigger ngOnInit
     fixture.detectChanges();
     tick();
 
@@ -68,13 +65,11 @@ describe('WriterManagementComponent', () => {
   it('should open and close modal correctly', () => {
     const testUser = mockUsers[0];
     
-    // Open modal
     component.openModal(testUser);
     expect(component.isModalOpen).toBeTrue();
     expect(component.selectedUser).toEqual(testUser);
     expect(component.selectedRoleId).toBe(testUser.role_id);
 
-    // Close modal
     component.closeModal();
     expect(component.isModalOpen).toBeFalse();
     expect(component.selectedUser).toBeNull();
@@ -95,7 +90,7 @@ describe('WriterManagementComponent', () => {
       ...testUser,
       role_id: newRole
     });
-    expect(mockUserService.getUsersByRoles).toHaveBeenCalledTimes(2); // Once on init, once after update
+    expect(mockUserService.getUsersByRoles).toHaveBeenCalledTimes(2); 
     expect(component.isModalOpen).toBeFalse();
   }));
 
@@ -103,12 +98,10 @@ describe('WriterManagementComponent', () => {
     component.users = mockUsers;
     component.itemsPerPage = 2;
 
-    // First page
     component.currentPage = 1;
     expect(component.paginatedUsers).toEqual(mockUsers.slice(0, 2));
     expect(component.getPageNumbers()).toEqual([1, 2]);
 
-    // Second page
     component.currentPage = 2;
     expect(component.paginatedUsers).toEqual(mockUsers.slice(2, 4));
   });
@@ -126,32 +119,24 @@ describe('WriterManagementComponent', () => {
   }));
 
   it('should change page correctly', () => {
-    // Initialize with 3 mock users
     component.users = [...mockUsers];
     
-    // Test with 1 item per page (3 total pages)
     component.itemsPerPage = 1;
     
-    // Should not go below page 1
     component.changePage(0);
     expect(component.currentPage).toBe(0);
     
-    // Should navigate to page 2
     component.changePage(2);
     expect(component.currentPage).toBe(2);
     
-    // Should not go beyond max page (3 pages for 3 users with 1 per page)
     component.changePage(4);
     expect(component.currentPage).toBe(4);
     
-    // Test with 2 items per page (2 total pages)
     component.itemsPerPage = 2;
     
-    // Should navigate to page 2
     component.changePage(2);
     expect(component.currentPage).toBe(2);
     
-    // Should not go beyond max page (2 pages for 3 users with 2 per page)
     component.changePage(3);
     expect(component.currentPage).toBe(3);
   });

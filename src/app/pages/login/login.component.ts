@@ -7,7 +7,7 @@ import { GoogleSigninService } from '../../google_signin.service';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/users/user-service.service';
 import { AuthService } from '../../services/auth.service';
-import { environment } from '../../../environments/environments';  // Import environment variables
+import { environment } from '../../../environments/environments';
 import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
@@ -24,7 +24,6 @@ export class LoginComponent {
 
   loading: boolean = false;
 
-  // Use environment variables for role IDs
   writerRoleId = environment.writer_role_id;
   managerRoleId = environment.manager_role_id;
   adminRoleId = environment.admin_role_id;
@@ -43,23 +42,16 @@ export class LoginComponent {
     (window as any).handleCredentialResponse = (response: any) => {
       console.log("Google Response:", response);
 
-      // Decode JWT
       const userInfo = this.decodeJwt(response.credential);
       console.log("Decoded User Info:", userInfo);
 
-      // Save to localStorage (optional)
       localStorage.setItem("user", JSON.stringify(userInfo));
 
-      // Store user data
       this.userData = userInfo;
-      // Store in database
       this.saveUser(userInfo);
-      // Store in auth service
       this.authUserService.setUser(userInfo);
 
-      // Navigate within Angular zone
       this.ngZone.run(() => {
-        // Call the function to navigate based on user role
         this.redirectBasedOnRole(userInfo);
       });
     };
@@ -67,7 +59,7 @@ export class LoginComponent {
 
   decodeJwt(token: string): any {
     try {
-      const base64Url = token.split('.')[1]; // Get Payload part
+      const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
@@ -104,7 +96,6 @@ export class LoginComponent {
     }
   }
 
-  // Method to redirect based on user role
   redirectBasedOnRole(userInfo: any) {
     this.loading = true
     this.userService.getUserByEmail(userInfo['email']).subscribe(user => {
@@ -129,7 +120,6 @@ export class LoginComponent {
     });
   }
 
-  // Navigation logic after successful login
   navigateToOverview() {
     this.router.navigate(['/topic-overview']);
   }
@@ -140,8 +130,6 @@ export class LoginComponent {
 
   signIn() {
     console.log('Sign in');
-
-    // Sign in with Google
     this.googleAuthService.signInWithGoogle().then(user => {
       console.log(user);
       this.navigateToOverview();

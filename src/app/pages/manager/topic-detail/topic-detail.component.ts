@@ -26,7 +26,6 @@ export class TopicDetailComponent implements OnInit {
   loading = true;
   editMode = false;
 
-  // Filter variables
   filters = {
     description: '',
     writer: '',
@@ -34,7 +33,6 @@ export class TopicDetailComponent implements OnInit {
     sortOrder: 'newest'
   };
 
-  // Form variables
   editForm = {
     name: '',
     ui_image: '',
@@ -56,7 +54,7 @@ export class TopicDetailComponent implements OnInit {
   ngOnInit() {
     const topicId = this.route.snapshot.paramMap.get('id');
     if (topicId) {
-      this.loadTopicAndRelatedData(topicId); // This now handles user loading
+      this.loadTopicAndRelatedData(topicId);
     }
   }
 
@@ -69,17 +67,14 @@ export class TopicDetailComponent implements OnInit {
         access_user_emails: [...topic.access_user_emails]
       };
 
-      // First load users, then load drawings
       this.userService.getUsers().subscribe(users => {
         this.allUsers = users;
 
         this.drawingService.getDrawingsByTopic(topicId).subscribe(drawings => {
           this.drawings = drawings;
 
-          // Get unique writer IDs from drawings
           const writerIds = [...new Set(drawings.map(d => d.writer_id))];
 
-          // Filter allUsers to only include writers with drawings
           this.writersWithDrawings = this.allUsers.filter(user =>
             user.id && writerIds.includes(user.id)
           );
@@ -104,22 +99,18 @@ export class TopicDetailComponent implements OnInit {
     });
   }
 
-  // Filtering and sorting functionality
   get filteredDrawings(): Drawing[] {
     let result = this.drawings ?? [];
 
-    // Filter by description
     if (this.filters.description.trim()) {
       const term = this.filters.description.toLowerCase();
       result = result.filter(d => d.description?.toLowerCase().includes(term));
     }
 
-    // Filter by writer
     if (this.filters.writer) {
       result = result.filter(d => d.writer_id === this.filters.writer);
     }
 
-    // Filter by status
     if (this.filters.status) {
       result = result.filter(d => {
         if (this.filters.status === 'reviewed') {
@@ -129,15 +120,12 @@ export class TopicDetailComponent implements OnInit {
       });
     }
 
-    // Sort
     result = result.slice().sort((a, b) => {
-      // Sort by date
       if (this.filters.sortOrder === 'newest' || this.filters.sortOrder === 'oldest') {
         const dateA = new Date(a.created_at ?? 0).getTime();
         const dateB = new Date(b.created_at ?? 0).getTime();
         return this.filters.sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
       }
-      // Sort by status
       else if (this.filters.sortOrder === 'status') {
         const statusOrder = ['unreviewed', 'request_changes', 'reviewed'];
         return statusOrder.indexOf(a.status || '') - statusOrder.indexOf(b.status || '');
@@ -148,7 +136,6 @@ export class TopicDetailComponent implements OnInit {
     return result;
   }
 
-  // Get writer name for display
   getWriterName(writerId: string | undefined): string {
     if (!writerId) return 'Unknown';
     const writer = this.allUsers.find(u => u.id === writerId);
@@ -218,7 +205,7 @@ export class TopicDetailComponent implements OnInit {
 
     if (confirm('Are you sure you want to delete this topic? All associated drawings and labels will also be deleted.')) {
       this.topicService.deleteTopic(this.topic.id).subscribe(() => {
-        this.router.navigate(['/']); // Navigate back to home or topics list
+        this.router.navigate(['/']);
       });
     }
   }

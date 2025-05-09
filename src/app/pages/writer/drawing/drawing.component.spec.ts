@@ -18,7 +18,6 @@ describe('DrawingComponent', () => {
   let mockAuthService: jasmine.SpyObj<AuthService>;
 
   beforeEach(async () => {
-    // Update this line to include getDrawing
     mockDrawingService = jasmine.createSpyObj('DrawingService', [
       'addDrawing', 
       'updateDrawing', 
@@ -84,7 +83,6 @@ describe('DrawingComponent', () => {
       ]
     }).compileComponents();
 
-    // Setup mock responses
     mockLabelService.getLabelsByTopic.and.returnValue(of([
       { id: 'label1', name: 'Label 1', topic_id: 'test-topic-id' },
       { id: 'label2', name: 'Label 2', topic_id: 'test-topic-id' }
@@ -102,7 +100,6 @@ describe('DrawingComponent', () => {
     mockDrawingService.addDrawing.and.returnValue(of('new-drawing-id'));
     mockDrawingService.updateDrawing.and.returnValue(of(void 0));
     
-    // Add this mock for getDrawing
     mockDrawingService.getDrawing.and.returnValue(of({
       id: 'test-drawing-id',
       writer_id: 'test-user-id',
@@ -133,7 +130,7 @@ describe('DrawingComponent', () => {
   });
 
   it('should load labels for the topic', fakeAsync(() => {
-    tick(); // Wait for async operations
+    tick();
     expect(mockLabelService.getLabelsByTopic).toHaveBeenCalledWith('test-topic-id');
     expect(component.dropdownOptions).toEqual(['Label 1', 'Label 2']);
     expect(component.label_id_pairs).toEqual({
@@ -148,16 +145,12 @@ describe('DrawingComponent', () => {
     component.description = 'Test description';
     
     await component.submitDrawing();
-    // Immediately after submission, success should be true
     expect(component.success).toBeTrue();
     
-    // Fast-forward 3 seconds
     tick(3000);
         
-    // After timeout, success should be false again
     expect(component.success).toBeFalse();
         
-    // Verify service was called
     expect(mockDrawingService.addDrawing).toHaveBeenCalled();
   }));
 
@@ -167,16 +160,12 @@ describe('DrawingComponent', () => {
     component.description = 'Test description';
     
     await component.submitDrawing();
-    // Immediately after submission, success should be true
     expect(component.success).toBeTrue();
     
-    // Fast-forward 3 seconds
     tick(3000);
         
-    // After timeout, success should be false again
     expect(component.success).toBeFalse();
         
-    // Verify service was called
     expect(mockDrawingService.updateDrawing).toHaveBeenCalled();
   }));
 
@@ -185,16 +174,12 @@ describe('DrawingComponent', () => {
     component.selectedOption = '';
     
     await component.submitDrawing();
-    // Immediately after submission, error should be true
     expect(component.error).toBeTrue();
     
-    // Fast-forward 3 seconds
     tick(3000);
         
-    // After timeout, error should be false again
     expect(component.error).toBeFalse();
         
-    // Verify service was called
     expect(mockDrawingService.addDrawing).not.toHaveBeenCalled();
   }));
 });

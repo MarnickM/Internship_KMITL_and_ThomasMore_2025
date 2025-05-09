@@ -19,7 +19,6 @@ describe('ManagerManagementComponent', () => {
   ];
 
   beforeEach(async () => {
-    // Create spy object for UserService
     mockUserService = jasmine.createSpyObj('UserService', [
       'getUsersByRoles', 
       'updateUser', 
@@ -36,7 +35,6 @@ describe('ManagerManagementComponent', () => {
     fixture = TestBed.createComponent(ManagerManagementComponent);
     component = fixture.componentInstance;
 
-    // Setup mock responses
     mockUserService.getUsersByRoles.and.returnValue(of(mockUsers));
     mockUserService.updateUser.and.returnValue(of(undefined));
     mockUserService.deleteUser.and.returnValue(of(undefined));
@@ -49,7 +47,6 @@ describe('ManagerManagementComponent', () => {
   });
 
   it('should load users with manager, writer or no role on initialization', fakeAsync(() => {
-    // Trigger ngOnInit
     fixture.detectChanges();
     tick();
 
@@ -71,13 +68,11 @@ describe('ManagerManagementComponent', () => {
   it('should open and close modal correctly', () => {
     const testUser = mockUsers[0];
     
-    // Open modal
     component.openModal(testUser);
     expect(component.isModalOpen).toBeTrue();
     expect(component.selectedUser).toEqual(testUser);
     expect(component.selectedRoleId).toBe(testUser.role_id);
 
-    // Close modal
     component.closeModal();
     expect(component.isModalOpen).toBeFalse();
     expect(component.selectedUser).toBeNull();
@@ -98,7 +93,7 @@ describe('ManagerManagementComponent', () => {
       ...testUser,
       role_id: newRole
     });
-    expect(mockUserService.getUsersByRoles).toHaveBeenCalledTimes(2); // Once on init, once after update
+    expect(mockUserService.getUsersByRoles).toHaveBeenCalledTimes(2);
     expect(component.isModalOpen).toBeFalse();
   }));
 
@@ -106,12 +101,10 @@ describe('ManagerManagementComponent', () => {
     component.users = mockUsers;
     component.itemsPerPage = 2;
 
-    // First page
     component.currentPage = 1;
     expect(component.paginatedUsers).toEqual(mockUsers.slice(0, 2));
     expect(component.getPageNumbers()).toEqual([1, 2]);
 
-    // Second page
     component.currentPage = 2;
     expect(component.paginatedUsers).toEqual(mockUsers.slice(2, 4));
   });
@@ -132,24 +125,20 @@ describe('ManagerManagementComponent', () => {
     component.users = [...mockUsers];
     component.itemsPerPage = 1;
     
-    // Test valid page changes
     component.changePage(2);
     expect(component.currentPage).toBe(2);
     
-    // Test minimum boundary
     component.changePage(0);
     expect(component.currentPage).toBe(0);
     
-    // Test maximum boundary
     component.changePage(4);
-    expect(component.currentPage).toBe(4); // 3 pages total (3 users / 1 per page)
+    expect(component.currentPage).toBe(4);
     
-    // Test with different items per page
     component.itemsPerPage = 2;
     component.changePage(2);
-    expect(component.currentPage).toBe(2); // 2 pages total (3 users / 2 per page = ceil(1.5) = 2)
+    expect(component.currentPage).toBe(2);
     
     component.changePage(3);
-    expect(component.currentPage).toBe(3); // Should not exceed max page
+    expect(component.currentPage).toBe(3);
   });
 });

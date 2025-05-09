@@ -27,8 +27,7 @@ export class ManagerOverviewComponent implements OnInit {
   selectedEmail: string = '';
   userEmail: string = '';
 
-  // Label management properties
-  tempLabels: { name: string }[] = []; // Temporary storage for labels before topic is created
+  tempLabels: { name: string }[] = [];
   newLabelInput: string = '';
 
   topicForm = {
@@ -72,7 +71,6 @@ export class ManagerOverviewComponent implements OnInit {
     });
   }
 
-  // Label management methods
   addLabelToTempList() {
     if (!this.newLabelInput.trim()) return;
 
@@ -94,11 +92,9 @@ export class ManagerOverviewComponent implements OnInit {
       this.labelService.addLabel(newLabel).subscribe();
     });
 
-    // Clear temporary labels after saving
     this.tempLabels = [];
   }
 
-  // Access email management methods
   addAccessEmail() {
     if (this.selectedEmail && !this.topicForm.access_user_emails.includes(this.selectedEmail)) {
       this.topicForm.access_user_emails.push(this.selectedEmail);
@@ -110,7 +106,6 @@ export class ManagerOverviewComponent implements OnInit {
     this.topicForm.access_user_emails = this.topicForm.access_user_emails.filter(e => e !== email);
   }
 
-  // Topic management methods
   addTopicFunction(): void {
     this.addTopic = true;
     this.resetForm();
@@ -146,7 +141,6 @@ export class ManagerOverviewComponent implements OnInit {
         newTopic.id = topicId;
         this.topics.push(newTopic);
 
-        // Save labels after topic is created
         if (this.tempLabels.length > 0) {
           this.saveLabelsForTopic(topicId);
         }
@@ -157,7 +151,6 @@ export class ManagerOverviewComponent implements OnInit {
     }
   }
 
-  // Filter and sorting methods
   filteredTopics(): Topic[] {
     const lower = this.searchText.toLowerCase();
     let filtered = this.topics.filter(t => t.name.toLowerCase().includes(lower));

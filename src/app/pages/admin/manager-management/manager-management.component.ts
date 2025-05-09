@@ -53,21 +53,18 @@ export class ManagerManagementComponent {
     }
   }
 
-    // Open modal with user details
     openModal(user: User) {
       this.selectedUser = user;
       this.selectedRoleId = user.role_id;
       this.isModalOpen = true;
     }
   
-    // Close modal
     closeModal() {
       this.isModalOpen = false;
       this.selectedUser = null;
       this.selectedRoleId = '';
     }
   
-    // Save role changes
     saveRoleChanges() {
       // console.log('Save role changes:', this.selectedUser, this.selectedRoleId);
       if (this.selectedUser && this.selectedRoleId) {

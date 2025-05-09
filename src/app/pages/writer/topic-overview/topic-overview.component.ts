@@ -35,14 +35,10 @@ export class TopicOverviewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Get the logged-in user's email from the AuthService
     this.userEmail = this.authService.getUser()?.email;
 
-    // Retrieve the topics
     this.topicService.getTopics().subscribe(topics => {
-      // Filter topics based on the user's email in the access_user_emails list
       this.topics = topics.filter(topic => topic.access_user_emails?.includes(this.userEmail || ''));
-      // Build map of topic_id => topic name
       this.topicIdToName = {};
       for (const topic of this.topics) {
         if (topic.id) {
@@ -60,7 +56,7 @@ export class TopicOverviewComponent implements OnInit {
                 ...d,
                 created_at: (d.created_at as any).toDate ? (d.created_at as any).toDate() : d.created_at
               }))
-              .sort((a, b) => b.created_at.getTime() - a.created_at.getTime()); // newest first
+              .sort((a, b) => b.created_at.getTime() - a.created_at.getTime());
           });
 
         }

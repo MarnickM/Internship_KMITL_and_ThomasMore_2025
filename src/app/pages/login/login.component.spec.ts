@@ -65,7 +65,6 @@ describe('LoginComponent', () => {
     component = fixture.componentInstance;
     mockNgZone = TestBed.inject(NgZone);
 
-    // Mock environment variables
     component.writerRoleId = 'writer';
     component.managerRoleId = 'manager';
     component.adminRoleId = 'admin';
@@ -126,10 +125,8 @@ describe('LoginComponent', () => {
   }));
 
   it('should handle credential response and redirect', fakeAsync(() => {
-    // Add this mock first
     mockUserService.getUserByEmail.and.returnValue(of(mockUser));
     
-    // Replace the spyOn for redirectBasedOnRole with this:
     component.redirectBasedOnRole = jasmine.createSpy('redirectBasedOnRole');
     
     spyOn(component, 'decodeJwt').and.returnValue(mockDecodedJwt);
@@ -231,7 +228,6 @@ describe('LoginComponent', () => {
   }));
 
   it('should set client_id in ngAfterViewInit', () => {
-    // Create a container div that matches your component's template structure
     const container = document.createElement('div');
     document.body.appendChild(container);
     fixture = TestBed.createComponent(LoginComponent);
@@ -246,7 +242,6 @@ describe('LoginComponent', () => {
     
     expect(gIdOnloadDiv.getAttribute('data-client_id')).toBe('test-client-id');
     
-    // Clean up
     document.body.removeChild(container);
   });
 });
