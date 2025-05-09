@@ -29,7 +29,6 @@ describe('NavigationComponent', () => {
   };
 
   beforeEach(async () => {
-    // Create spy objects for all services
     mockAuthService = jasmine.createSpyObj('AuthService', ['logout', 'user$']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockUserService = jasmine.createSpyObj('UserService', ['getUserByEmail']);
@@ -38,7 +37,7 @@ describe('NavigationComponent', () => {
       imports: [
         CommonModule,
         RouterModule,
-        NavigationComponent // Import the standalone component here
+        NavigationComponent
       ],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
@@ -50,7 +49,6 @@ describe('NavigationComponent', () => {
     fixture = TestBed.createComponent(NavigationComponent);
     component = fixture.componentInstance;
 
-    // Setup mock responses
     mockAuthService.user$ = of(mockUser);
     mockUserService.getUserByEmail.and.returnValue(of(mockUserWithRole));
 
@@ -124,7 +122,6 @@ describe('NavigationComponent', () => {
     const consoleSpy = spyOn(console, 'error');
     mockUserService.getUserByEmail.and.returnValue(throwError(() => new Error('User fetch error')));
     
-    // Trigger ngOnInit again with new mock
     mockAuthService.user$ = of(mockUser);
     fixture = TestBed.createComponent(NavigationComponent);
     component = fixture.componentInstance;

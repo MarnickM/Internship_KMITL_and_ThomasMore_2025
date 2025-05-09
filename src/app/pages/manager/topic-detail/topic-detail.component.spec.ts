@@ -92,7 +92,6 @@ describe('TopicDetailComponent', () => {
     fixture = TestBed.createComponent(TopicDetailComponent);
     component = fixture.componentInstance;
 
-    // Setup mock responses
     mockTopicService.getTopic.and.returnValue(of(mockTopic));
     mockDrawingService.getDrawingsByTopic.and.returnValue(of(mockDrawings));
     mockUserService.getUsers.and.returnValue(of(mockUsers));
@@ -110,7 +109,6 @@ describe('TopicDetailComponent', () => {
   });
 
   it('should load topic and related data on init', fakeAsync(() => {
-    // Reset mocks with complete data
     mockLabelService.getLabelsByTopic = jasmine.createSpy().and.returnValue(of([{
       id: 'label1',
       name: 'Label One',
@@ -132,14 +130,12 @@ describe('TopicDetailComponent', () => {
   it('should filter drawings correctly', () => {
     component.drawings = mockDrawings;
     
-    // Test description filter
     component.filters.description = 'Test';
     expect(component.filteredDrawings.length).toBe(1);
     
     component.filters.description = 'Nonexistent';
     expect(component.filteredDrawings.length).toBe(0);
     
-    // Test writer filter
     component.filters.description = '';
     component.filters.writer = 'user1';
     expect(component.filteredDrawings.length).toBe(1);
@@ -147,7 +143,6 @@ describe('TopicDetailComponent', () => {
     component.filters.writer = 'user2';
     expect(component.filteredDrawings.length).toBe(0);
     
-    // Test status filter
     component.filters.writer = '';
     component.filters.status = 'unreviewed';
     expect(component.filteredDrawings.length).toBe(1);
@@ -225,14 +220,12 @@ describe('TopicDetailComponent', () => {
   });
 
   it('should view drawing', fakeAsync(() => {
-    // Create a fresh test drawing with required properties
     const testDrawing: Drawing = {
       ...mockDrawings[0],
       label_id: 'label1',
       topic_id: 'topic1'
     };
   
-    // Reset and setup fresh mocks
     mockTopicService.getTopic = jasmine.createSpy().and.returnValue(of(mockTopic));
     mockLabelService.getLabel = jasmine.createSpy().and.returnValue(of(mockLabels[0]));
   

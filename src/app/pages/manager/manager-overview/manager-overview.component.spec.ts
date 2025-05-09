@@ -109,7 +109,6 @@ describe('ManagerOverviewComponent', () => {
     component = fixture.componentInstance;
   });
 
-  // Helper function to reset mocks and initialize component
   function initializeComponent() {
     mockTopicService.getTopicsByCreatorEmail.and.returnValue(of([...mockTopics]));
     mockDrawingService.getDrawings.and.returnValue(of([...mockDrawings]));
@@ -256,7 +255,6 @@ describe('ManagerOverviewComponent', () => {
     component.addTopicToDb();
     
     expect(mockTopicService.addTopic).toHaveBeenCalled();
-    // Should be initial 2 mock topics + 1 new topic
     expect(component.topics.length).toBe(3);
     expect(mockLabelService.addLabel).toHaveBeenCalledWith({
       topic_id: 'new-topic-id',

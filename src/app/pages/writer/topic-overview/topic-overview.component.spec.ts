@@ -34,7 +34,6 @@ describe('TopicOverviewComponent', () => {
   const mockUser = { email: 'example@example.com' };
 
   beforeEach(async () => {
-    // Create spy objects for all services
     mockTopicService = jasmine.createSpyObj('TopicService', ['getTopics', 'getTopic']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockAuthService = jasmine.createSpyObj('AuthService', ['getUser']);
@@ -57,7 +56,6 @@ describe('TopicOverviewComponent', () => {
     fixture = TestBed.createComponent(TopicOverviewComponent);
     component = fixture.componentInstance;
 
-    // Setup mock responses
     mockTopicService.getTopics.and.returnValue(of(mockTopics));
     mockAuthService.getUser.and.returnValue(mockUser);
     mockUserService.getUserByEmail.and.returnValue(of({ id: 'user1', name: 'user1', email: '', role_id: '', image: '' }));
@@ -71,7 +69,6 @@ describe('TopicOverviewComponent', () => {
   });
 
   it('should load topics on initialization', fakeAsync(() => {
-    // Trigger ngOnInit
     fixture.detectChanges();
     tick();
 
@@ -97,7 +94,6 @@ describe('TopicOverviewComponent', () => {
   }));
 
   it('should handle pagination correctly', () => {
-    // Set mock data directly for pagination tests
     component.topics = mockTopics;
     component.topicsPerPage = 1;
 

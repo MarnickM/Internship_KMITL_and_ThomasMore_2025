@@ -242,7 +242,6 @@ export class DrawingComponent {
 
     this.drawingObject.status = newStatus;
 
-    // If "request_changes" selected, attach the comment
     if (newStatus === 'request_changes') {
       this.drawingObject.changeRequestComment = this.changeRequestComment;
     } else {

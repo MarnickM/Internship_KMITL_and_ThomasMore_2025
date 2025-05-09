@@ -82,9 +82,8 @@ describe('SubmissionsOverviewComponent', () => {
   };
 
   beforeEach(async () => {
-    // Create spy objects for all services
     mockDrawingService = jasmine.createSpyObj('DrawingService', ['getDrawingsByWriter', 'deleteDrawing']);
-    mockTopicService = jasmine.createSpyObj('TopicService', ['getTopic', 'getTopics']); // Added getTopics here
+    mockTopicService = jasmine.createSpyObj('TopicService', ['getTopic', 'getTopics']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockLabelService = jasmine.createSpyObj('LabelService', ['getLabel']);
     mockUserService = jasmine.createSpyObj('UserService', ['getUserByEmail']);
@@ -105,14 +104,12 @@ describe('SubmissionsOverviewComponent', () => {
     fixture = TestBed.createComponent(SubmissionsOverviewComponent);
     component = fixture.componentInstance;
 
-    // Setup mock responses
     mockAuthService.getUser.and.returnValue({ email: 'test@example.com' });
     mockUserService.getUserByEmail.and.returnValue(of(mockUser));
     mockDrawingService.getDrawingsByWriter.and.returnValue(of(mockDrawings));
     mockTopicService.getTopic.and.returnValue(of(mockTopic));
     mockLabelService.getLabel.and.returnValue(of(mockLabel));
     
-    // Add this mock for getTopics
     mockTopicService.getTopics.and.returnValue(of(mockTopics));
 
     fixture.detectChanges();
@@ -123,7 +120,6 @@ describe('SubmissionsOverviewComponent', () => {
   });
 
   it('should load topics on initialization', fakeAsync(() => {
-    // Trigger ngOnInit
     fixture.detectChanges();
     tick();
 
@@ -135,7 +131,6 @@ describe('SubmissionsOverviewComponent', () => {
   }));
 
   it('should load user drawings on initialization', fakeAsync(() => {
-    // Trigger ngOnInit
     fixture.detectChanges();
     tick();
 
@@ -149,12 +144,10 @@ describe('SubmissionsOverviewComponent', () => {
     component.drawings = mockDrawings;
     component.itemsPerPage = 1;
 
-    // First page
     component.currentPage = 1;
     expect(component.paginatedDrawings).toEqual([mockDrawings[0]]);
     expect(component.totalPages).toBe(2);
 
-    // Second page
     component.currentPage = 2;
     expect(component.paginatedDrawings).toEqual([mockDrawings[1]]);
   });
@@ -163,18 +156,14 @@ describe('SubmissionsOverviewComponent', () => {
     component.drawings = mockDrawings;
     component.itemsPerPage = 1;
 
-    // Initial state
     expect(component.currentPage).toBe(1);
 
-    // Next page
     component.nextPage();
     expect(component.currentPage).toBe(2);
 
-    // Previous page
     component.prevPage();
     expect(component.currentPage).toBe(1);
 
-    // Should not go beyond limits
     component.prevPage();
     expect(component.currentPage).toBe(1);
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
-import { UserService } from '../../services/users/user-service.service';  // Import UserService
+import { UserService } from '../../services/users/user-service.service';
 
 @Component({
   selector: 'app-navigation',
@@ -15,14 +15,14 @@ export class NavigationComponent implements OnInit {
 
   profileMenuOpen: boolean = false;
   loggedIn: boolean = false;
-  user: any = null; // Store user details
-  userRole: string = ''; // Store user role
+  user: any = null;
+  userRole: string = '';
   menuOpen = false;
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private userService: UserService // Inject UserService to fetch user by email
+    private userService: UserService
   ) { }
 
   ngOnInit() {
@@ -34,17 +34,14 @@ export class NavigationComponent implements OnInit {
         this.fetchUserRole();
       }
     });
-    
   }
   
-
-  // Fetch the user role based on the email after login
   fetchUserRole() {
     if (this.user?.email) {
       this.userService.getUserByEmail(this.user.email).subscribe(
         (user) => {
           if (user) {
-            this.userRole = user.role_id;  // Assuming role_id is in the user object
+            this.userRole = user.role_id;
             console.log("User role:", this.userRole);
           }
         },

@@ -18,8 +18,8 @@ import { Location } from '@angular/common';
 })
 export class TopicManagementComponent implements OnInit {
   topics: Topic[] = [];
-  drawingsCountByTopic: { [key: string]: number } = {};  // Store drawing count per topic
-  drawings: any[] = []; // Store all drawings here
+  drawingsCountByTopic: { [key: string]: number } = {};  
+  drawings: any[] = []; 
   currentTopic: Topic | null = null;
   topicName: string = '';
   currentUserEmail: string | null = null;
@@ -52,7 +52,7 @@ export class TopicManagementComponent implements OnInit {
         this.currentUserEmail = user.email;
         this.topicService.getTopicsByCreatorEmail(user.email).subscribe(topics => {
           this.topics = topics;
-          this.loadDrawingsCount(); // Fetch the drawings count for each topic after topics are loaded
+          this.loadDrawingsCount(); 
         });
         this.loadUserEmails();
       }
@@ -85,12 +85,11 @@ export class TopicManagementComponent implements OnInit {
       if (!topic.access_user_emails.includes(this.selectedEmail)) {
         topic.access_user_emails.push(this.selectedEmail);
 
-        // Update in Firestore using the service method
         this.topicService.updateTopic(topic).subscribe({
           next: () => {
             console.log('Access updated');
             this.selectedEmail = '';
-            this.accessModalVisible = false;  // Optionally close the modal after update
+            this.accessModalVisible = false; 
           },
           error: (err) => {
             console.error('Error updating access:', err);
@@ -104,10 +103,8 @@ export class TopicManagementComponent implements OnInit {
     if (this.selectedTopicForAccess) {
       const topic = this.selectedTopicForAccess;
 
-      // Filter out the email to remove it
       topic.access_user_emails = topic.access_user_emails.filter(existingEmail => existingEmail !== email);
 
-      // Update in Firestore
       this.topicService.updateTopic(topic).subscribe({
         next: () => {
           console.log('Access removed');
@@ -122,9 +119,8 @@ export class TopicManagementComponent implements OnInit {
   loadDrawingsCount() {
     if (this.topics.length !== 0) {
       this.topics.forEach(topic => {
-        // Use the drawing service to get the drawings by topic
         this.drawingService.getDrawingsByTopic(topic.id!).subscribe(drawings => {
-          this.drawingsCountByTopic[topic.id!] = drawings.length; // Store the count of drawings per topic
+          this.drawingsCountByTopic[topic.id!] = drawings.length;
         });
       });
     }
@@ -145,53 +141,49 @@ export class TopicManagementComponent implements OnInit {
       };
       this.topicService.addTopic(newTopic).subscribe((topicId) => {
         newTopic.id = topicId;
-        this.topics.push(newTopic); // Add the new topic to the list
-        this.topicName = ''; // Reset the input field
+        this.topics.push(newTopic);
+        this.topicName = '';
       });
     }
   }
 
   addLabel(topic_id: string, topic_name: string) {
-    console.log("addLabel triggered"); // Debugging log
+    console.log("addLabel triggered");
     if (this.labelModalVisible) return;
 
-    this.newLabel = { topic_id: topic_id, name: "" }; // Reset new label input
+    this.newLabel = { topic_id: topic_id, name: "" };
     this.currentTopicName = topic_name;
     this.labelModalVisible = true;
 
-    // Fetch labels for this topic and store them in the dictionary
     this.labelService.getLabelsByTopic(topic_id).subscribe((labels) => {
       console.log("Labels from Firebase:", labels);
-      const updatedLabels = []; // Create a new array for the labels
+      const updatedLabels = [];
 
-      // Assuming Firebase returns an array of label objects with `id` and `name`
       for (let label of labels) {
-        const labelItem = { id: label.id as string, name: label.name }; // Use the correct `id` and `name`
+        const labelItem = { id: label.id as string, name: label.name }; 
         updatedLabels.push(labelItem);
       }
 
-      this.labelsByTopic = { ...this.labelsByTopic, [topic_id]: updatedLabels }; // Immutable update
+      this.labelsByTopic = { ...this.labelsByTopic, [topic_id]: updatedLabels };
       console.log("Labels by topic:", this.labelsByTopic);
     });
   }
 
 
   saveLabel() {
-    if (!this.newLabel.name.trim()) return; // Prevent empty label submission
+    if (!this.newLabel.name.trim()) return;
 
     this.labelService.addLabel(this.newLabel).subscribe((id) => {
       console.log("New label ID:", id);
-      const newLabel = { id: id, name: this.newLabel.name }; // Create full label object with Firebase-generated ID
+      const newLabel = { id: id, name: this.newLabel.name };
 
-      // Ensure labelsByTopic is initialized for this topic
       if (!this.labelsByTopic[this.newLabel.topic_id]) {
         this.labelsByTopic[this.newLabel.topic_id] = [];
       }
 
-      this.labelsByTopic[this.newLabel.topic_id].push(newLabel); // Update dictionary
-      this.newLabel.name = ""; // Reset input
+      this.labelsByTopic[this.newLabel.topic_id].push(newLabel); 
+      this.newLabel.name = "";
 
-      // Manually trigger change detection
     });
   }
 
@@ -203,11 +195,10 @@ export class TopicManagementComponent implements OnInit {
     updatedlabel.topic_id = topic_id;
 
     this.labelService.updateLabel(updatedlabel).subscribe(() => {
-      // Update the label in our dictionary
       const topicLabels = this.labelsByTopic[topic_id];
       const index = topicLabels.findIndex(l => l.id === label.id);
       if (index !== -1) {
-        topicLabels[index] = { ...label }; // Ensure it's properly updated
+        topicLabels[index] = { ...label };
       }
     });
   }
@@ -216,7 +207,6 @@ export class TopicManagementComponent implements OnInit {
   deleteLabel(label_id: string, topic_id: string) {
     this.labelService.deleteLabel(label_id).subscribe(() => {
       if (this.labelsByTopic[topic_id]) {
-        // Filter out the label with the matching `id`
         this.labelsByTopic[topic_id] = this.labelsByTopic[topic_id].filter(label => label.id !== label_id);
       }
     });
@@ -225,7 +215,7 @@ export class TopicManagementComponent implements OnInit {
 
 
   editTopic(topic: Topic) {
-    this.currentTopic = { ...topic }; // Create a copy of the topic for editing
+    this.currentTopic = { ...topic };
     this.topicName = this.currentTopic.name
   }
 
@@ -260,19 +250,16 @@ export class TopicManagementComponent implements OnInit {
 
   confirmDelete() {
     if (this.topicToDeleteId) {
-      // Delete drawings related to the topic first
       const drawingsToDelete = this.drawings.filter(drawing => drawing.topicId === this.topicToDeleteId);
       drawingsToDelete.forEach(drawing => {
         this.drawingService.deleteDrawing(drawing.id).subscribe();
       });
 
-      // delete all labels related to the topic
       const labelsToDelete = this.labelsByTopic[this.topicToDeleteId] || [];
       labelsToDelete.forEach(label => {
         this.labelService.deleteLabel(label.id).subscribe();
       });
 
-      // Then delete the topic
       this.topicService.deleteTopic(this.topicToDeleteId).subscribe(() => {
         this.topics = this.topics.filter(topic => topic.id !== this.topicToDeleteId);
         this.topicToDeleteId = null;

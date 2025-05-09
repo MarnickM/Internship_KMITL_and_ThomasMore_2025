@@ -46,9 +46,7 @@ export class SubmissionsOverviewComponent {
     });
 
     this.topicService.getTopics().subscribe(topics => {
-      // Filter topics based on the user's email in the access_user_emails list
       this.topics = topics.filter(topic => topic.access_user_emails?.includes(this.userEmail || ''));
-      // Build map of topic_id => topic name
       this.topicIdToName = {};
       for (const topic of this.topics) {
         if (topic.id) {
@@ -122,18 +120,15 @@ export class SubmissionsOverviewComponent {
   get filteredDrawings(): Drawing[] {
     let result = this.drawings ?? [];
 
-    // Filter by topic
     if (this.filters.topic) {
       result = result.filter(d => d.topic_id === this.filters.topic);
     }
 
-    // Filter by description text (case-insensitive)
     if (this.filters.description.trim()) {
       const term = this.filters.description.toLowerCase();
       result = result.filter(d => d.description?.toLowerCase().includes(term));
     }
 
-    // Filter by status
     if (this.filters.status) {
       result = result.filter(d => {
         if (this.filters.status === 'reviewed') {
@@ -143,7 +138,6 @@ export class SubmissionsOverviewComponent {
       });
     }
 
-    // Sort
     result = result.slice().sort((a, b) => {
       const dateA = new Date(a.created_at ?? 0).getTime();
       const dateB = new Date(b.created_at ?? 0).getTime();

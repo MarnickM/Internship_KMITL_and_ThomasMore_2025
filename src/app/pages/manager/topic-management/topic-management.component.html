@@ -1,5 +1,4 @@
 <div class="container mx-auto p-4 bg-white">
-    <!-- Add/Edit Topic Form -->
     <div class="mb-6">
         <h2 class="text-2xl font-semibold mb-4 text-black">
             {{ currentTopic ? 'Edit Topic' : 'Add New Topic' }}
@@ -32,7 +31,6 @@
                         class="flex items-center justify-between mb-4 p-4 bg-white rounded-md shadow-md border border-black">
                         <div>
                             <h4 class="text-lg font-semibold text-black">{{ topic.name }}</h4>
-                            <!-- Display count of drawings for the topic -->
                             <p class="text-sm text-gray-700">
                                 Drawings: {{ drawingsCountByTopic[topic.id || 0] || 0 }}
                             </p>
@@ -90,8 +88,6 @@
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div class="bg-white p-6 rounded-lg shadow-lg w-96 border border-black">
                 <h3 class="text-lg font-semibold mb-4 text-black">Manage Labels for {{ currentTopicName }}</h3>
-                
-                <!-- Add New Label Input -->
                 <div class="mb-4">
                     <input [(ngModel)]="newLabel.name"
                         placeholder="Enter label name"
@@ -121,8 +117,6 @@
                 @else {
                     <h4 class="text-md font-semibold mb-2 text-black">There are no labels yet.</h4>
                 }                
-    
-                <!-- Close Button -->
                 <div class="flex justify-end mt-4">
                     <button (click)="labelModalVisible = false"
                         class="px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400">
@@ -138,22 +132,16 @@
             <h3 class="text-lg font-semibold mb-4 text-black">
               Manage Access for {{ selectedTopicForAccess?.name }}
             </h3>
-      
-            <!-- Dropdown to select user -->
             <select [(ngModel)]="selectedEmail" class="w-full px-4 py-2 border border-black rounded-md mb-4 text-black bg-white">
               <option value="" disabled>Select a user</option>
               @for(email of userEmails; track email) {
                 <option [value]="email">{{ email }}</option>
               }
             </select>
-      
-            <!-- Add button -->
             <button (click)="addAccessEmail()"
                     class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 mb-4">
               Add User
             </button>
-      
-            <!-- Display current access list -->
             @if((selectedTopicForAccess?.access_user_emails ?? []).length > 0) {
               <h4 class="text-md font-semibold mb-2 text-black">Current Access:</h4>
               <ul>
@@ -170,8 +158,6 @@
             } @else {
               <p class="text-gray-700">No users have access yet.</p>
             }
-      
-            <!-- Close button -->
             <div class="flex justify-end mt-4">
               <button (click)="accessModalVisible = false"
                       class="px-4 py-2 bg-gray-300 text-black rounded-md hover:bg-gray-400">
@@ -181,6 +167,4 @@
           </div>
         </div>
       }
-      
-      
 </div>
