@@ -67,8 +67,8 @@ An **Angular-based** web application where users with different roles (**Writer*
 
 ### **Prerequisites**  
 - Node.js (v16+)  
-- Angular CLI (`npm install -g @angular/cli`)  
-- Firebase account (for Firestore & Hosting)  
+- Firebase account (for Firestore & Hosting)
+- Google account
 
 ### **1️⃣ Clone the Repository**  
 ```bash
@@ -83,13 +83,21 @@ npm install
 
 ### **3️⃣ Configure Firebase (Database & Hosting)**  
 #### **Database**
-1. Set up **Firestore Database** in Firebase Console.
-2. Add config provided by Firebase in src/app/app.config.ts
+1. Set up **Firestore Database** in Firebase Console
+2. Add config (replace current config from Firebase) provided by Firebase in src/app/app.config.ts
+
 #### **Hosting**
-1. Set up **Firebase Hosting** in Firebase Console.
-2. install Firebase CLI in angular project
-3. run `firebase login` and `firebase init` in the CLI console
-4. Update Firebase config in:  
+1. Create a new project online in the Firebase console
+2. Install Firebase CLI in angular project via `npm install -g firebase-tools`
+3. Run `firebase login` to login into the account you used to make the Firebase project in the console in step 1
+4. Run `firebase init` to initialize setting up your deployment
+   - **select** Hosting: Configure files for Firebase Hosting and (optionally) set up Github Action deploys
+   - **select** use an existing project
+   - **select** the project you made in step 1
+   - **change** the public directory from (public) to dist/drawing-app
+   - configure as a single-page app: **NO**
+   - set up automatic builds and deploys with Github: **NO**
+6. Update Firebase config in:  
    - `src/firebase.json`
    - `.firebaserc`
 
