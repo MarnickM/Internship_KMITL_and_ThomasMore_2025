@@ -107,7 +107,7 @@ npm install
      - a screen will now appear with your credentials, copy both your client secret and client ID
      - Go to the Angular application and update Google OAuth credentials in (see image below):
        - `src/environments/environment.ts`
-------
+
 URL's in Authorized JavaScript Origins:
 
 ![afbeelding](https://github.com/user-attachments/assets/7e5e42a7-c25c-4e56-a893-a5fc3d6f5522)
@@ -116,7 +116,7 @@ Environments file where you need to place your credentials:
 
 ![afbeelding](https://github.com/user-attachments/assets/43b8b21d-bf72-4cf1-9b22-17a07c44bf2f)
 
-
+------
 
 ### **4️⃣ Configure Firebase (Database & Hosting)**  
 #### **Database**
