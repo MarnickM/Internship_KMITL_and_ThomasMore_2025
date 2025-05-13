@@ -95,8 +95,8 @@ npm install
    - **select** use an existing project
    - **select** the project you made in step 1
    - **change** the public directory from (public) to dist/drawing-app
-   - configure as a single-page app: **NO**
-   - set up automatic builds and deploys with Github: **NO**
+   - configure as a single-page app: **No**
+   - set up automatic builds and deploys with Github: **No**
 6. Run `Firebase deploy`, the app will be deployed. Use the link provided in your terminal after you used this command to visit your app.
 
 ### **4️⃣ Configure Google Sign-In**  
