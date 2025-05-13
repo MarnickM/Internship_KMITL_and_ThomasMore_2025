@@ -38,7 +38,7 @@ An **Angular-based** web application where users with different roles (**Writer*
 |------|-------------|
 | **Topic Overview** | Same as Writer, but with additional management options. |
 | **Manager Overview** | View and manage all drawings submitted by Writers that belong to a topic created by the Manager currently logged in. |
-| **Topic Management** | Create/update/delete **topics** and their **labels**. |
+| **Topic Detail** | Create/update/delete **topics** and their **labels**. |
 | **Writer Management** | Approve new Writers and manage their roles. |
 
 ### **🛠️ Admin**  
