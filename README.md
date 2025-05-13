@@ -105,10 +105,12 @@ npm install
      => you may not have the URL of the hosting yet, our hosting project will be created in part 4. As soon as your project is created and deployed, you can add the URL here.
      
 ![afbeelding](https://github.com/user-attachments/assets/7e5e42a7-c25c-4e56-a893-a5fc3d6f5522)
+     
      - click on **create** at the bottom of the page
      - a screen will now appear with your credentials, copy both your client secret and client ID
      - Go to the Angular application and update Google OAuth credentials in:
        - `src/environments/environment.ts`
+       
 ![afbeelding](https://github.com/user-attachments/assets/43b8b21d-bf72-4cf1-9b22-17a07c44bf2f)
 
 
