@@ -55,7 +55,6 @@
            </div>
            <div class="px-5 lg:px-0 flex justify-between flex-col">
              <div>
-              @if(userRole != 'UEjEnMYFPoKvwMOauVnY') {
                 <div class="mb-2 leading-none">
                   @if(drawingObject.status == "unreviewed") {
                     <p>This drawing is <span class="font-bold">unreviewed</span>.</p>
@@ -68,7 +67,6 @@
                     </div>
                   }
                 </div>
-              }
               <div class="flex flex-col w-full">
                 <label for="dropdown" class="text-sm font-medium text-gray-700 mb-1">Select a label</label>
                 <select id="dropdown" class="h-10 rounded-md border bg-gray-100 text-black px-2" [(ngModel)]="selectedOption">
@@ -94,8 +92,8 @@
                   <div class="flex flex-col mt-2">
                     <label for="changeComment" class="text-sm font-medium text-gray-700 mb-1">Request Comment</label>
                     <div class="flex flex-col items-center">
-                      <textarea id="changeComment" [(ngModel)]="changeRequestComment" class="w-full border border-black rounded-md p-2 h-20 bg-white text-black"></textarea>
-                      <app-button (click)="updateStatus('request_changes')" class="mt-2 rounded"  buttonText="Submit Request"></app-button>
+                      <textarea id="changeComment" [(ngModel)]="changeRequestComment" class="w-full border border-black rounded-md p-2 h-20 bg-white text-black mb-4"></textarea>
+                      <button (click)="updateStatus('request_changes')" class="w-1/2 text-white bg-gray-600 rounded-md hover:bg-gray-900 transition-all duration-300 h-10 text-sm mb-4">SUBMIT REQUEST</button>
                     </div>
                   </div>
                 }
