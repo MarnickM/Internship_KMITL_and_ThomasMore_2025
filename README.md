@@ -81,7 +81,38 @@ cd Thai_Internship_2025
 npm install
 ```
 
-### **3️⃣ Configure Firebase (Database & Hosting)**  
+### **3️⃣ Configure Google Sign-In**  
+1. Create a Google OAuth project in the Google Console
+   - create a new project
+   - go to your new project
+   - open the navigation menu on the top left and go to **API & Services** > **OAuth Consent Screen**
+   - select **External** and then click **create**
+   - **OAuth Consent Screen**:
+     - in the **App information** category, choose a name for your app and add your gmail as the user support email
+     - in the **Developer Contact Information** category, add your gmail again
+     - click on **save & continue**
+   - **Scopes**:
+     - don't add any, just click **save & continue** at the bottom
+   - **Test Users**:
+     - add your gmail again
+   - **Summary**:
+     - you can check if everything is correct
+   - in the navigation menu on the left, select **Credentials**
+     - click on **create credentials** and select **OAuth client ID**
+     - select the application type: **Web application**
+     - type in the name of your application, take the name you gave your application earlier
+     - in the **Authorized JavaScript Origins** category, add all URL's that will have access to your application. This will enable the use of the application both locally (localhost) as on the web (url of hosting).
+     => you may not have the URL of the hosting yet, our hosting project will be created in part 4. As soon as your project is created and deployed, you can add the URL here.
+     
+![afbeelding](https://github.com/user-attachments/assets/7e5e42a7-c25c-4e56-a893-a5fc3d6f5522)
+     - click on **create** at the bottom of the page
+     - a screen will now appear with your credentials, copy both your client secret and client ID
+     - Go to the Angular application and update Google OAuth credentials in:
+       - `src/environments/environment.ts`
+![afbeelding](https://github.com/user-attachments/assets/43b8b21d-bf72-4cf1-9b22-17a07c44bf2f)
+
+
+### **4️⃣ Configure Firebase (Database & Hosting)**  
 #### **Database**
 1. Set up **Firestore Database** in Firebase Console
 2. Add config (replace current config from Firebase) provided by Firebase in src/app/app.config.ts
@@ -97,12 +128,7 @@ npm install
    - **change** the public directory from (public) to dist/drawing-app
    - configure as a single-page app: **No**
    - set up automatic builds and deploys with Github: **No**
-6. Run `Firebase deploy`, the app will be deployed. Use the link provided in your terminal after you used this command to visit your app.
-
-### **4️⃣ Configure Google Sign-In**  
-- Create a Google OAuth project in the Google Console
-- Update Google OAuth credentials in:
-  - `src/app/app.config.ts` & `src/environments/environment.ts` (you may need to create the env file yourself since this won't be pushed to Github)
+6. Run `Firebase deploy`, the app will be deployed. Use the link provided in your terminal after you used this command to visit your app. Don't forget to put this link in the JavaScript Origins in OAuth in your Google console project to enable login via a Google account.
 
 ### **5️⃣ Run Locally**  
 ```bash
