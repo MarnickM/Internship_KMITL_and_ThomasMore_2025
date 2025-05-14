@@ -60,7 +60,7 @@
                     <p>This drawing is <span class="font-bold">unreviewed</span>.</p>
                   }@else if (drawingObject.status == 'reviewed') {
                     <p><span class="">This drawing has been <span class="font-bold text-green-500">reviewed</span>.</span></p>
-                  }@else {
+                  }@else if(drawingObject.status == 'request_changes') {
                     <p class="mb-2"><span class="text-orange-500">There is an action required!</span></p>
                     <div class="bg-gray-100 rounded-md p-2">
                       <p>{{ drawingObject.changeRequestComment }}</p>
