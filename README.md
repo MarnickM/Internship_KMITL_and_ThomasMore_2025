@@ -66,6 +66,7 @@ An **Angular-based** web application where users with different roles (**Writer*
 ## **🚀 Setup & Deployment Guide**
 
 ### Watch the video tutorial of how to setup the Drawing App: https://youtu.be/p6dPEtgYQnM
+[![Tutorial on how to set up the Drawing App](https://img.youtube.com/vi/p6dPEtgYQnM/0.jpg)](https://www.youtube.com/watch?v=p6dPEtgYQnM)
 
 ### **Prerequisites**  
 - Node.js (v16+)  
